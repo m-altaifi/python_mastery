@@ -33,27 +33,27 @@ Here’s a list of data structures I’ve explored and implemented, along with r
 
 ### **Basic Data Structures**
 
-- [/] **List**  
+- [x] **List**  
   - **Project:** To-Do List Manager  
   - **Description:** A simple CLI-based to-do list application to manage tasks using Python lists.
 
-- [x] **Tuple**  
+- [ ] **Tuple**  
   - **Project:** Student Grade Tracker  
   - **Description:** A program to store and retrieve student grades using immutable tuples.
 
-- [x] **Set**  
+- [ ] **Set**  
   - **Project:** Unique Word Counter  
   - **Description:** A script to count unique words in a text file using Python sets.
 
-- [x] **Dictionary**  
+- [ ] **Dictionary**  
   - **Project:** Contact Book  
   - **Description:** A CLI-based contact book to store and retrieve contact information using dictionaries.
 
-- [x] **String**  
+- [ ] **String**  
   - **Project:** Palindrome Checker  
   - **Description:** A program to check if a string is a palindrome, demonstrating string manipulation.
 
-- [x] **Array**  
+- [ ] **Array**  
   - **Project:** Temperature Tracker  
   - **Description:** A program to track daily temperatures using arrays and perform basic analytics.
 
