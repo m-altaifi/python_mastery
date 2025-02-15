@@ -33,76 +33,87 @@ Here’s a list of data structures I’ve explored and implemented, along with r
 
 ### **Basic Data Structures**
 
-- [x] **List**  
-  - **Project:** To-Do List Manager  
+- [x] **List**
+
+  - **Project:** To-Do List Manager
   - **Description:** A simple CLI-based to-do list application to manage tasks using Python lists.
 
-- [ ] **Tuple**  
-  - **Project:** Student Grade Tracker  
+- [ ] **Tuple**
+
+  - **Project:** Student Grade Tracker
   - **Description:** A program to store and retrieve student grades using immutable tuples.
 
-- [ ] **Set**  
-  - **Project:** Unique Word Counter  
+- [ ] **Set**
+
+  - **Project:** Unique Word Counter
   - **Description:** A script to count unique words in a text file using Python sets.
 
-- [ ] **Dictionary**  
-  - **Project:** Contact Book  
+- [ ] **Dictionary**
+
+  - **Project:** Contact Book
   - **Description:** A CLI-based contact book to store and retrieve contact information using dictionaries.
 
-- [ ] **String**  
-  - **Project:** Palindrome Checker  
+- [ ] **String**
+
+  - **Project:** Palindrome Checker
   - **Description:** A program to check if a string is a palindrome, demonstrating string manipulation.
 
-- [ ] **Array**  
-  - **Project:** Temperature Tracker  
+- [ ] **Array**
+  - **Project:** Temperature Tracker
   - **Description:** A program to track daily temperatures using arrays and perform basic analytics.
 
 ---
 
 ### **Advanced Data Structures**
 
-- [ ] **Deque**  
-  - **Project:** Undo-Redo Feature for a Text Editor  
+- [ ] **Deque**
+
+  - **Project:** Undo-Redo Feature for a Text Editor
   - **Description:** Implementing an undo-redo feature using a deque for efficient operations.
 
-- [ ] **Counter**  
-  - **Project:** Word Frequency Analyzer  
+- [ ] **Counter**
+
+  - **Project:** Word Frequency Analyzer
   - **Description:** A program to analyze word frequency in a text using the `collections.Counter` class.
 
-- [ ] **Defaultdict**  
-  - **Project:** Grouping Data by Category  
+- [ ] **Defaultdict**
+
+  - **Project:** Grouping Data by Category
   - **Description:** A script to group data by categories using `defaultdict`.
 
-- [ ] **Heap**  
-  - **Project:** Task Scheduler  
+- [ ] **Heap**
+  - **Project:** Task Scheduler
   - **Description:** A priority-based task scheduler using a min-heap.
 
 ---
 
 ### **Trees and Graphs**
 
-- [ ] **Linked List**  
-  - **Project:** Music Playlist Manager  
+- [ ] **Linked List**
+
+  - **Project:** Music Playlist Manager
   - **Description:** A program to manage a music playlist using a singly linked list.
 
-- [ ] **Binary Tree**  
-  - **Project:** File System Organizer  
+- [ ] **Binary Tree**
+
+  - **Project:** File System Organizer
   - **Description:** A program to simulate a file system using a binary tree structure.
 
-- [ ] **Graph**  
-  - **Project:** Social Network Analyzer  
+- [ ] **Graph**
+  - **Project:** Social Network Analyzer
   - **Description:** A program to analyze connections in a social network using graph traversal algorithms.
 
 ---
 
 ### **Specialized Data Structures**
 
-- [ ] **Bloom Filter**  
-  - **Project:** Spell Checker  
+- [ ] **Bloom Filter**
+
+  - **Project:** Spell Checker
   - **Description:** A spell-checking tool using a Bloom filter for efficient word lookup.
 
-- [ ] **Segment Tree**  
-  - **Project:** Range Sum Query  
+- [ ] **Segment Tree**
+  - **Project:** Range Sum Query
   - **Description:** A program to efficiently compute range sums using a segment tree.
 
 ---
@@ -118,16 +129,19 @@ Each data structure in this repository is accompanied by a real-life project to 
 Here are some resources I’m using to learn about data structures:
 
 ### **Books**
-- **"Introduction to Algorithms"** by Cormen, Leiserson, Rivest, and Stein  
-- **"Data Structures and Algorithms in Python"** by Michael T. Goodrich  
+
+- **"Introduction to Algorithms"** by Cormen, Leiserson, Rivest, and Stein
+- **"Data Structures and Algorithms in Python"** by Michael T. Goodrich
 
 ### **Online Courses**
-- [FreeCodeCamp Data Structures and Algorithms](https://www.freecodecamp.org/)  
-- [Coursera: Python Data Structures](https://www.coursera.org/)  
+
+- [FreeCodeCamp Data Structures and Algorithms](https://www.freecodecamp.org/)
+- [Coursera: Python Data Structures](https://www.coursera.org/)
 
 ### **Websites**
-- [GeeksforGeeks](https://www.geeksforgeeks.org/)  
-- [LeetCode](https://leetcode.com/)  
+
+- [GeeksforGeeks](https://www.geeksforgeeks.org/)
+- [LeetCode](https://leetcode.com/)
 
 ---
 
@@ -137,3 +151,4 @@ Here are some resources I’m using to learn about data structures:
    ```bash
    git clone https://github.com/RRBoss/python_mastery.git
    cd python_mastery
+   ```
