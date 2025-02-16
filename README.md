@@ -38,15 +38,18 @@ Here’s a list of data structures I’ve explored and implemented, along with r
   - **Project:** To-Do List Manager
   - **Description:** A simple CLI-based to-do list application to manage tasks using Python lists.
 
-- [ ] **Tuple**
+- [x] **Tuple**
 
   - **Project:** Student Grade Tracker
   - **Description:** A program to store and retrieve student grades using immutable tuples.
 
-- [ ] **Set**
+- [x] **Set**
 
   - **Project:** Unique Word Counter
   - **Description:** A script to count unique words in a text file using Python sets.
+
+  - **Project:** Hobby Tracker
+  - **Description:** A script to keep track on unique hobbies.
 
 - [ ] **Dictionary**
 
