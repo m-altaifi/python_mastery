@@ -1,7 +1,9 @@
 import sys
+import os
 from rich.console import Console
 from rich.table import Table
 from rich.prompt import Prompt
+from rich.panel import Panel
 
 # Initialize Rich console
 console = Console()
@@ -21,9 +23,52 @@ contacts = (
 )
 
 
+def clear_screen():
+    """Clear the terminal screen for a cleaner look."""
+    os.system("cls" if os.name == "nt" else "clear")
+
+
+def show_menu():
+    """Show the main menu with nice colors."""
+    console.print(Panel.fit("[bold magenta]📇 Tuple-Based Contact Manager[/bold magenta]", style="bold cyan"))
+    console.print("\n[bold]What would you like to do?[/bold]")
+    console.print("1. 👀 View Contacts", style="bold yellow")
+    console.print("2. 🔍 Find Contact", style="bold yellow")
+    console.print("3. ➕ Add Contact", style="bold yellow")
+    console.print("4. 👋 Exit", style="bold yellow")
+
+
+def should_cancel(user_input):
+    """
+    Check if the user wants to go back to the main menu.
+    Returns True if they want to cancel, False if they want to continue.
+    """
+    if not user_input:  # They just pressed Enter
+        return True
+    return user_input.lower().strip() in ["exit", "back"]
+
+
+def ask_user(question, allow_empty=False):
+    """
+    Ask the user a question and handle the response nicely.
+    Returns None if they want to cancel, otherwise returns their answer.
+    """
+    answer = Prompt.ask(f"[bold yellow]{question}[/bold yellow] (press Enter to go back)").strip()
+
+    if should_cancel(answer) and not allow_empty:
+        console.print(Panel.fit("↩️ Going back to main menu!", border_style="bold yellow"))
+        return None
+
+    return answer
+
+
 def show_contacts():
-    """Display all contacts."""
-    table = Table(title="Contact List")
+    """Display all contacts in a Rich table."""
+    if not contacts:
+        console.print(Panel.fit("❌ No contacts found. Add one first!", border_style="bold red"))
+        return
+
+    table = Table(title="[bold]Contact List[/bold]", show_header=True, header_style="bold blue")
     table.add_column("Name", style="cyan", justify="left")
     table.add_column("Phone Number", style="green", justify="left")
 
@@ -35,44 +80,69 @@ def show_contacts():
 
 def find_contact():
     """Find a contact by name."""
-    name = Prompt.ask("Enter the name to search").strip()
+    name = ask_user("Enter the name to search")
+    if name is None:
+        return
+
     for contact in contacts:
         if contact[0].lower() == name.lower():
-            console.print(f"[bold green]Found:[/] {contact[0]} - {contact[1]}")
+            console.print(
+                Panel.fit(
+                    f"[bold green]✓ Found:[/bold green] [bold cyan]{contact[0]}[/bold cyan] - [bold yellow]{contact[1]}[/bold yellow]",
+                    title="[bold]Search Results[/bold]",
+                    border_style="bold magenta",
+                )
+            )
             return
-    console.print("[bold red]Contact not found![/]")
+    console.print(Panel.fit("[bold red]✗ Contact not found![/bold red]", border_style="bold red"))
 
 
 def add_contact():
     """Add a new contact."""
     global contacts
-    name = Prompt.ask("Enter the new contact's name").strip()
-    phone = Prompt.ask("Enter the phone number").strip()
+    name = ask_user("Enter the new contact's name")
+    if name is None:
+        return
+
+    phone = ask_user("Enter the phone number", allow_empty=True)
+    if phone is None:
+        return
+
     contacts = contacts + ((name, phone),)
-    console.print(f"[bold green]Contact added:[/] {name} - {phone}")
+    console.print(
+        Panel.fit(
+            f"[bold green]✓ Contact added:[/bold green] [bold cyan]{name}[/bold cyan] - [bold yellow]{phone}[/bold yellow]",
+            title="[bold]Add Contact[/bold]",
+            border_style="bold green",
+        )
+    )
 
 
 def main():
-    """CLI main menu."""
+    """Run the Contact Manager."""
     while True:
-        console.print("\n[bold yellow]Tuple-Based Contact Manager[/]")
-        console.print("1. View Contacts")
-        console.print("2. Find Contact")
-        console.print("3. Add Contact")
-        console.print("4. Exit")
+        clear_screen()
+        show_menu()
 
-        choice = Prompt.ask("Choose an option").strip()
-        if choice == "1":
-            show_contacts()
-        elif choice == "2":
-            find_contact()
-        elif choice == "3":
-            add_contact()
-        elif choice == "4":
-            console.print("[bold blue]Goodbye![/]")
-            sys.exit()
-        else:
-            console.print("[bold red]Invalid choice, please try again.[/]")
+        choice = Prompt.ask("[bold cyan]Enter your choice[/bold cyan]", choices=["1", "2", "3", "4"], default="4")
+
+        clear_screen()
+
+        match choice:
+            case "1":
+                show_contacts()
+            case "2":
+                find_contact()
+            case "3":
+                add_contact()
+            case "4":
+                console.print(Panel.fit("👋 Thanks for using Contact Manager. Goodbye!", style="bold green"))
+                sys.exit()
+            case _:
+                console.print("❌ Please enter a number between 1 and 4!", style="bold red")
+
+        if choice != "4":
+            Prompt.ask("\nPress Enter to continue...")
 
 
 if __name__ == "__main__":
