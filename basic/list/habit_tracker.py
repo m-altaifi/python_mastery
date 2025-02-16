@@ -1,84 +1,180 @@
+import os
 from datetime import datetime, timedelta
+
+# Rich is a library that makes pretty terminal output
 from rich.console import Console
 from rich.table import Table
 from rich.prompt import Prompt
 from rich.panel import Panel
 
+# Create our pretty console - this helps make nice colored output
 console = Console()
 
 
-def display_menu():
-    console.print(Panel("[bold cyan]Habit Tracker Menu[/bold cyan]", expand=False))
-    console.print("1. Add a Habit")
-    console.print("2. Log a Habit Completion")
-    console.print("3. View Habit Progress")
-    console.print("4. Exit")
+def clear_screen():
+    """Clear the terminal screen for a cleaner look."""
+    # 'cls' for Windows, 'clear' for Mac/Linux
+    os.system("cls" if os.name == "nt" else "clear")
 
 
-def add_habit(habits):
-    habit_name = Prompt.ask("[green]Enter the name of the habit[/green]")
-    goal = int(Prompt.ask("[green]Enter your goal (times per week)[/green]"))
+def show_menu():
+    """Show the main menu with nice colors."""
+    # Display a pretty title
+    console.print(Panel.fit("[bold magenta]👋 Welcome to Your Habit Tracker![/bold magenta]", style="bold cyan"))
 
-    habits.append({"name": habit_name, "goal": goal, "completions": []})
-    console.print(f"[bold green]Habit '{habit_name}' added with a goal of {goal} times per week![/bold green]")
+    # Show menu options
+    console.print("\n[bold]What would you like to do?[/bold]")
+    console.print("1. ✨ Create a New Habit", style="bold yellow")
+    console.print("2. ✅ Mark a Habit as Complete", style="bold yellow")
+    console.print("3. 📊 See Your Progress", style="bold yellow")
+    console.print("4. 👋 Exit", style="bold yellow")
 
 
-def log_habit_completion(habits):
-    if not habits:
-        console.print("[red]No habits found. Add a habit first![/red]")
+def should_cancel(user_input):
+    """
+    Check if the user wants to go back to the main menu.
+    Returns True if they want to cancel, False if they want to continue.
+    """
+    # User can press Enter, type 'exit', or type 'back' to cancel
+    if not user_input:  # They just pressed Enter
+        return True
+    return user_input.lower().strip() in ["exit", "back"]
+
+
+def ask_user(question, allow_empty=False):
+    """
+    Ask the user a question and handle the response nicely.
+    Returns None if they want to cancel, otherwise returns their answer.
+    """
+    # Get user's answer
+    answer = Prompt.ask(f"[bold yellow]{question}[/bold yellow] (press Enter to go back)").strip()
+
+    # Check if they want to cancel
+    if should_cancel(answer) and not allow_empty:
+        console.print(Panel.fit("↩️ Going back to main menu!", border_style="bold yellow"))
+        return None
+
+    return answer
+
+
+def create_habit(habits):
+    """Create a new habit and add it to the list."""
+    # Ask for the habit name
+    habit_name = ask_user("What habit would you like to track?")
+    if habit_name is None:
         return
 
-    table = Table(title="Select a Habit", header_style="bold magenta")
-    table.add_column("#", justify="right")
-    table.add_column("Habit Name", justify="left")
-    for index, habit in enumerate(habits, start=1):
-        table.add_row(str(index), habit["name"])
+    # Ask for weekly goal
+    while True:
+        goal = ask_user("How many times per week do you want to do this?")
+        if goal is None:
+            return
+
+        try:
+            goal = int(goal)
+            if goal > 0:
+                break
+            console.print("❌ Please enter a positive number!", style="bold red")
+        except ValueError:
+            console.print("❌ Please enter a number!", style="bold red")
+
+    # Add the new habit to our list
+    habits.append({"name": habit_name, "goal": goal, "completions": []})  # This will store the dates when the habit was completed
+
+    # Show success message
+    console.print(Panel.fit(f"[bold green]✨ Great! Added '{habit_name}' with a goal of {goal} times per week![/bold green]", border_style="bold green"))
+
+
+def mark_complete(habits):
+    """Mark a habit as complete for today."""
+    if not habits:
+        console.print(Panel.fit("❌ No habits found. Create one first!", border_style="bold red"))
+        return
+
+    # Show all habits in a pretty table
+    table = Table(title="[bold]Your Habits[/bold]", show_header=True, header_style="bold blue")
+    table.add_column("Number", style="cyan")
+    table.add_column("Habit", style="green")
+
+    # Add each habit to the table
+    for num, habit in enumerate(habits, 1):
+        table.add_row(str(num), habit["name"])
+
     console.print(table)
 
-    try:
-        habit_index = int(Prompt.ask("[blue]Enter the habit number to log completion[/blue]")) - 1
-        if 0 <= habit_index < len(habits):
-            habits[habit_index]["completions"].append(datetime.now())
-            console.print(f"[bold green]Completion logged for '{habits[habit_index]['name']}'![/bold green]")
-        else:
-            console.print("[red]Invalid habit number![/red]")
-    except ValueError:
-        console.print("[red]Please enter a valid number![/red]")
+    # Ask which habit they completed
+    while True:
+        choice = ask_user("Enter the number of the habit you completed:")
+        if choice is None:
+            return
+
+        try:
+            choice = int(choice)
+            if 1 <= choice <= len(habits):
+                break
+            console.print("❌ Please enter a valid habit number!", style="bold red")
+        except ValueError:
+            console.print("❌ Please enter a number!", style="bold red")
+
+    # Record the completion
+    habit = habits[choice - 1]
+    habit["completions"].append(datetime.now())
+
+    console.print(Panel.fit(f"[bold green]🎉 Nice work! Marked '{habit['name']}' as complete![/bold green]", border_style="bold green"))
 
 
-def view_habit_progress(habits):
+def show_progress(habits):
+    """Show how well you're doing with your habits."""
     if not habits:
-        console.print("[red]No habits found. Add a habit first![/red]")
+        console.print(Panel.fit("❌ No habits found. Create one first!", border_style="bold red"))
         return
 
-    table = Table(title="Habit Progress", show_header=True, header_style="bold cyan")
-    table.add_column("Habit Name", justify="left")
-    table.add_column("Progress (This Week)", justify="right")
+    # Create a pretty table for progress
+    table = Table(title="[bold]📊 Your Progress This Week[/bold]", show_header=True, header_style="bold magenta")
+    table.add_column("Habit", style="cyan")
+    table.add_column("Progress", justify="center", style="green")
 
+    # For each habit, count completions in the last 7 days
     for habit in habits:
-        completions_this_week = sum(1 for date in habit["completions"] if datetime.now() - date < timedelta(days=7))
-        table.add_row(habit["name"], f"{completions_this_week}/{habit['goal']}")
+        week_ago = datetime.now() - timedelta(days=7)
+        completed = sum(1 for date in habit["completions"] if date > week_ago)
+        progress = f"[bold green]{completed}[/bold green]/[bold yellow]{habit['goal']}[/bold yellow]"
+        table.add_row(habit["name"], progress)
 
     console.print(table)
 
 
 def main():
+    """Run our habit tracker."""
+    # This will store all our habits
     habits = []
-    while True:
-        display_menu()
-        choice = Prompt.ask("[bold yellow]Enter your choice (1-4)[/bold yellow]")
 
-        if choice == "1":
-            add_habit(habits)
-        elif choice == "2":
-            log_habit_completion(habits)
-        elif choice == "3":
-            view_habit_progress(habits)
-        elif choice == "4":
-            console.print("[bold red]\nExiting the Habit Tracker. Goodbye![/bold red]")
-            break
-        else:
-            console.print("[red]Invalid choice! Please enter a number between 1 and 4.[/red]")
+    while True:
+        clear_screen()
+        show_menu()
+
+        # Get user's choice
+        choice = Prompt.ask("[bold cyan]Enter your choice[/bold cyan]", choices=["1", "2", "3", "4"], default="4")
+
+        clear_screen()
+
+        # Handle their choice
+        match choice:
+            case "1":
+                create_habit(habits)
+            case "2":
+                mark_complete(habits)
+            case "3":
+                show_progress(habits)
+            case "4":
+                console.print(Panel.fit("👋 Thanks for using Habit Tracker. See you next time!", style="bold green"))
+                return
+            case _:
+                console.print("❌ Please enter a number between 1 and 4!", style="bold red")
+
+        # Wait for user before showing menu again
+        if choice != "4":
+            Prompt.ask("\nPress Enter to continue...")
 
 
 if __name__ == "__main__":
