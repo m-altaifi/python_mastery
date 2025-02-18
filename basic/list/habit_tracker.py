@@ -11,10 +11,6 @@ from rich.panel import Panel
 console = Console()
 
 
-def clear_screen():
-    """Clear the terminal screen for a cleaner look."""
-    # 'cls' for Windows, 'clear' for Mac/Linux
-    os.system("cls" if os.name == "nt" else "clear")
 
 
 def show_menu():
@@ -36,7 +32,7 @@ def should_cancel(user_input):
     Returns True if they want to cancel, False if they want to continue.
     """
     # User can press Enter, type 'exit', or type 'back' to cancel
-    if not user_input:  # They just pressed Enter
+    if not user_input:  # User just pressed Enter
         return True
     return user_input.lower().strip() in ["exit", "back"]
 
@@ -150,13 +146,13 @@ def main():
     habits = []
 
     while True:
-        clear_screen()
+        os.system("cls" if os.name == "nt" else "clear")
         show_menu()
 
         # Get user's choice
         choice = Prompt.ask("[bold cyan]Enter your choice[/bold cyan]", choices=["1", "2", "3", "4"], default="4")
 
-        clear_screen()
+        os.system("cls" if os.name == "nt" else "clear")
 
         # Handle their choice
         match choice:
@@ -174,7 +170,7 @@ def main():
 
         # Wait for user before showing menu again
         if choice != "4":
-            Prompt.ask("\nPress Enter to continue...")
+            input("\nPress Enter to continue...")
 
 
 if __name__ == "__main__":

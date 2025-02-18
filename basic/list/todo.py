@@ -8,11 +8,6 @@ from rich.panel import Panel
 console = Console()
 
 
-def clear_screen():
-    """Clear the terminal screen for a cleaner look."""
-    os.system("cls" if os.name == "nt" else "clear")  # Use 'cls' for Windows, 'clear' for Unix-based systems
-
-
 def show_menu():
     """Display the main menu with styled text and options."""
     console.print(Panel.fit("[bold magenta]📝 To-Do List Manager[/bold magenta]", style="bold cyan"))  # Title panel
@@ -134,13 +129,13 @@ def main():
     todo_list = []  # Initialize an empty to-do list
 
     while True:
-        clear_screen()  # Clear the screen for a clean UI
+        os.system("cls" if os.name == "nt" else "clear")  # Clear the screen for a clean UI
         show_menu()  # Display the main menu
 
         # Ask the user for their choice
         choice = Prompt.ask("[bold cyan]Enter your choice[/bold cyan]", choices=["1", "2", "3", "4", "5"], default="5")
 
-        clear_screen()  # Clear the screen before showing the next screen
+        os.system("cls" if os.name == "nt" else "clear")  # Clear the screen before showing the next screen
 
         match choice:  # Handle the user's choice
             case "1":
@@ -158,7 +153,7 @@ def main():
                 console.print("❌ Please enter a number between 1 and 5!", style="bold red")  # Handle invalid input
 
         if choice != "5":  # If the user didn't choose to exit, wait for them to continue
-            Prompt.ask("\nPress Enter to continue...")
+            input("\nPress Enter to continue...")
 
 
 if __name__ == "__main__":

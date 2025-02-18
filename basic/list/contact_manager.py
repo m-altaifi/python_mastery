@@ -2,7 +2,7 @@ import sys
 import os
 from rich.console import Console
 from rich.table import Table
-from rich.prompt import Prompt
+from rich.prompt import Prompt, Confirm
 from rich.panel import Panel
 
 # Initialize Rich console
@@ -10,11 +10,6 @@ console = Console()
 
 # Sample list-based contacts database
 contacts = [["Alice", "123-456-7890"], ["Bob", "987-654-3210"], ["Charlie", "555-555-5555"]]
-
-
-def clear_screen():
-    """Clear the terminal screen."""
-    os.system("cls" if os.name == "nt" else "clear")
 
 
 def show_menu():
@@ -34,7 +29,7 @@ def should_cancel(user_input):
     Check if the user wants to go back to the main menu.
     Returns True if they want to cancel, False if they want to continue.
     """
-    if not user_input:  # They just pressed Enter
+    if not user_input:  # User just pressed Enter
         return True
     return user_input.lower().strip() in ["exit", "back"]
 
@@ -47,7 +42,6 @@ def ask_user(question, allow_empty=False):
     answer = Prompt.ask(f"[bold yellow]{question}[/bold yellow] (press Enter to go back)").strip()
 
     if should_cancel(answer) and not allow_empty:
-        console.print(Panel.fit("↩️ Going back to main menu!", border_style="bold yellow"))
         return None
 
     return answer
@@ -133,12 +127,12 @@ def remove_contact():
 def main():
     """Run the contact manager."""
     while True:
-        clear_screen()
+        os.system("cls" if os.name == "nt" else "clear")
         show_menu()
 
         choice = Prompt.ask("[bold cyan]Enter your choice[/bold cyan]", choices=["1", "2", "3", "4", "5", "6"], default="6")
 
-        clear_screen()
+        os.system("cls" if os.name == "nt" else "clear")
 
         match choice:
             case "1":
@@ -157,9 +151,8 @@ def main():
             case _:
                 console.print(Panel.fit("❌ Invalid choice, please try again.", border_style="bold red"))
 
-        if choice != "6":
-            Prompt.ask("\nPress Enter to continue...")
-
+        if choice in ["1"]:
+            input("\nPress Enter to continue...")
 
 if __name__ == "__main__":
     main()

@@ -12,9 +12,6 @@ console = Console()
 hobbies = set()
 
 
-def clear_screen():
-    """Clear the terminal screen for a cleaner look."""
-    os.system("cls" if os.name == "nt" else "clear")
 
 
 def show_menu():
@@ -128,7 +125,7 @@ def clear_hobbies():
 def main():
     """Run the Unique Hobby Tracker."""
     while True:
-        clear_screen()
+        os.system("cls" if os.name == "nt" else "clear")
         show_menu()
 
         choice = Prompt.ask(
@@ -137,7 +134,7 @@ def main():
             default="6",
         )
 
-        clear_screen()
+        os.system("cls" if os.name == "nt" else "clear")
 
         match choice:
             case "1":
@@ -157,7 +154,7 @@ def main():
                 console.print("❌ Please enter a number between 1 and 6!", style="bold red")
 
         if choice != "6":
-            Prompt.ask("\nPress Enter to continue...")
+            input("\nPress Enter to continue...")
 
 
 if __name__ == "__main__":
