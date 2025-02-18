@@ -23,9 +23,6 @@ contacts = (
 )
 
 
-def clear_screen():
-    """Clear the terminal screen for a cleaner look."""
-    os.system("cls" if os.name == "nt" else "clear")
 
 
 def show_menu():
@@ -43,7 +40,7 @@ def should_cancel(user_input):
     Check if the user wants to go back to the main menu.
     Returns True if they want to cancel, False if they want to continue.
     """
-    if not user_input:  # They just pressed Enter
+    if not user_input:  # User just pressed Enter
         return True
     return user_input.lower().strip() in ["exit", "back"]
 
@@ -121,12 +118,12 @@ def add_contact():
 def main():
     """Run the Contact Manager."""
     while True:
-        clear_screen()
+        os.system("cls" if os.name == "nt" else "clear")
         show_menu()
 
         choice = Prompt.ask("[bold cyan]Enter your choice[/bold cyan]", choices=["1", "2", "3", "4"], default="4")
 
-        clear_screen()
+        os.system("cls" if os.name == "nt" else "clear")
 
         match choice:
             case "1":
@@ -142,7 +139,7 @@ def main():
                 console.print("❌ Please enter a number between 1 and 4!", style="bold red")
 
         if choice != "4":
-            Prompt.ask("\nPress Enter to continue...")
+            input("\nPress Enter to continue...")
 
 
 if __name__ == "__main__":
