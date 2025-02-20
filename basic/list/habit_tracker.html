@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Habit Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.1.0/dist/full.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css"
+        rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+</head>
+
+<body class="p-6 bg-slate-50 flex items-center justify-center min-h-screen">
+    <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Interactive Panel -->
+        <div class="bg-white p-8 rounded-xl border border-slate-200">
+            <h1 class="text-3xl font-bold text-center mb-2 text-slate-800">
+                🚀 Habit Tracker
+            </h1>
+            <p class="text-center text-slate-600 mb-6">
+                Manage your habits and track your progress
+            </p>
+
+            <!-- Habit Display -->
+            <div class="p-4 bg-slate-100 rounded-lg mb-6 min-h-[60px] transition-all duration-300">
+                <div class="mb-2 text-sm font-medium text-slate-700">
+                    Current Habits:
+                </div>
+                <div id="habitDisplay" class="flex flex-wrap gap-2">
+                    <span class="text-slate-500">No habits found.</span>
+                </div>
+            </div>
+
+            <!-- Python Habit Display -->
+            <div class="p-4 bg-slate-800 rounded-lg mb-6 font-mono text-sm">
+                <div class="text-slate-400 mb-2"># Python equivalent:</div>
+                <pre><code id="pythonHabits" class="text-green-400">habits = []</code></pre>
+            </div>
+
+            <!-- Input Field -->
+            <div class="space-y-3 mb-6">
+                <label class="block text-sm font-medium text-slate-700">Enter habit name or index:</label>
+                <input type="text" id="inputValue"
+                    class="input input-bordered w-full bg-white border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                    placeholder="Type a habit name or index" />
+                <p class="text-sm text-slate-500">
+                    For "Remove by Index," enter the index of the habit.
+                </p>
+            </div>
+
+            <!-- Buttons -->
+            <div class="grid grid-cols-2 gap-4">
+                <button class="btn bg-blue-100 hover:bg-blue-200 text-blue-800 border-blue-200 tooltip"
+                    data-tip="Python: habits.append()" aria-label="Create Habit" onclick="createHabit()">
+                    <i class="fas fa-plus mr-2"></i>Create Habit
+                </button>
+                <button class="btn bg-green-100 hover:bg-green-200 text-green-800 border-green-200 tooltip"
+                    data-tip="Python: habits.append()" aria-label="Mark Complete" onclick="markComplete()">
+                    <i class="fas fa-check mr-2"></i>Mark Complete
+                </button>
+                <button class="btn bg-purple-100 hover:bg-purple-200 text-purple-800 border-purple-200 tooltip"
+                    data-tip="Python: habits.pop()" aria-label="Show Progress" onclick="showProgress()">
+                    <i class="fas fa-chart-bar mr-2"></i>Show Progress
+                </button>
+                <button class="btn bg-red-100 hover:bg-red-200 text-red-800 border-red-200 tooltip"
+                    data-tip="Python: habits.clear()" aria-label="Reset Habits" onclick="resetHabits()">
+                    <i class="fas fa-undo mr-2"></i>Reset Habits
+                </button>
+            </div>
+        </div>
+
+        <!-- Python Reference Panel -->
+        <div class="bg-white p-8 rounded-xl border border-slate-200">
+            <h2 class="text-2xl font-bold mb-6 text-slate-800">
+                Python Habit Tracker Reference
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Initialization -->
+                <div class="p-4 bg-slate-100 rounded-lg">
+                    <h3 class="font-medium text-slate-800 mb-2">
+                        Habit Initialization
+                    </h3>
+                    <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">habits = []  # Empty list
+habits = [{"name": "Exercise", "goal": 3, "completions": []}]  # With initial values</code></pre>
+                </div>
+
+                <!-- Add/Remove Habits -->
+                <div class="p-4 bg-slate-100 rounded-lg">
+                    <h3 class="font-medium text-slate-800 mb-2">
+                        Adding & Completing Habits
+                    </h3>
+                    <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">habits.append({"name": "Read", "goal": 5, "completions": []})  # Add new habit
+habits[0]["completions"].append(datetime.now())  # Mark habit as complete</code></pre>
+                </div>
+
+                <!-- Progress Tracking -->
+                <div class="p-4 bg-slate-100 rounded-lg">
+                    <h3 class="font-medium text-slate-800 mb-2">
+                        Progress Tracking
+                    </h3>
+                    <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">week_ago = datetime.now() - timedelta(days=7)
+completed = sum(1 for date in habit["completions"] if date > week_ago)</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let habits = [];
+
+        // Load habits from localStorage
+        function loadHabits() {
+            const storedHabits = localStorage.getItem("habits");
+            if (storedHabits) {
+                habits = JSON.parse(storedHabits);
+            }
+            updateDisplay();
+        }
+
+        // Save habits to localStorage
+        function saveHabits() {
+            localStorage.setItem("habits", JSON.stringify(habits));
+        }
+
+        // Updates the habit display and Python equivalent
+        function updateDisplay() {
+            const habitDisplay = document.getElementById("habitDisplay");
+            const pythonHabits = document.getElementById("pythonHabits");
+
+            if (habits.length === 0) {
+                habitDisplay.innerHTML =
+                    '<span class="text-slate-500">No habits found.</span>';
+                pythonHabits.textContent = "habits = []";
+            } else {
+                habitDisplay.innerHTML = habits
+                    .map(
+                        (habit, index) => `
+                    <div class="px-3 py-2 rounded-lg bg-white border border-slate-200 flex items-center gap-2 transition-all duration-200 hover:scale-105">
+                        <span class="text-slate-500 text-sm">${index}:</span>
+                        <span class="font-medium text-slate-700">${habit.name}</span>
+                        <span class="text-sm text-slate-500">(${habit.completions.length}/${habit.goal})</span>
+                    </div>
+                `
+                    )
+                    .join("");
+                pythonHabits.textContent = `habits = ${JSON.stringify(habits, null, 2)}`;
+            }
+            hljs.highlightAll(); // Highlight Python code
+            saveHabits(); // Save habits to localStorage
+        }
+
+        // Gets the input value and clears the input field
+        function getInputValue() {
+            const inputValue = document.getElementById("inputValue").value.trim();
+            document.getElementById("inputValue").value = ""; // Clear input field
+            return inputValue;
+        }
+
+        // Shows a toast notification
+        function showToast(message, type = "info") {
+            const bgColors = {
+                success: "#10B981",
+                error: "#EF4444",
+                info: "#3B82F6",
+            };
+
+            Swal.fire({
+                toast: true,
+                position: "top-end",
+                icon: type,
+                title: message,
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                background: bgColors[type],
+                color: "#ffffff",
+                iconColor: "#ffffff",
+            });
+        }
+
+        // Creates a new habit
+        function createHabit() {
+            const name = getInputValue();
+            if (!name) {
+                showToast("Please enter a habit name.", "error");
+                return;
+            }
+
+            const goal = prompt("How many times per week do you want to do this?");
+            if (!goal || isNaN(goal) || goal <= 0) {
+                showToast("Please enter a valid weekly goal.", "error");
+                return;
+            }
+
+            habits.push({ name, goal: parseInt(goal), completions: [] });
+            updateDisplay();
+            showToast("Habit created successfully!", "success");
+        }
+
+        // Marks a habit as complete
+        function markComplete() {
+            if (habits.length === 0) {
+                showToast("No habits found. Create one first!", "error");
+                return;
+            }
+
+            const habitList = habits
+                .map(
+                    (habit, index) => `
+              <button
+                onclick="completeHabit(${index})"
+                class="w-full btn bg-green-100 hover:bg-green-200 text-green-800 border-green-200"
+              >
+                ${habit.name}
+              </button>
+            `
+                )
+                .join("");
+
+            Swal.fire({
+                title: "Select a Habit to Mark as Complete",
+                html: `<div class="space-y-2">${habitList}</div>`,
+                showConfirmButton: false,
+            });
+        }
+
+        // Completes a specific habit
+        function completeHabit(index) {
+            const habit = habits[index];
+            habit.completions.push(new Date());
+            updateDisplay();
+
+            // Check if the goal is achieved or exceeded
+            const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+            const completedThisWeek = habit.completions.filter(
+                (date) => new Date(date) > weekAgo
+            ).length;
+
+            if (completedThisWeek >= habit.goal) {
+                showToast(
+                    `🎉 You've achieved your goal for "${habit.name}"! (${completedThisWeek}/${habit.goal})`,
+                    "success"
+                );
+            } else {
+                showToast("Habit marked as complete!", "success");
+            }
+            Swal.close();
+        }
+
+        // Shows progress for all habits
+        function showProgress() {
+            if (habits.length === 0) {
+                showToast("No habits found. Create one first!", "error");
+                return;
+            }
+
+            const progressTable = habits
+                .map((habit) => {
+                    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+                    const completed = habit.completions.filter(
+                        (date) => new Date(date) > weekAgo
+                    ).length;
+                    return `
+              <div class="p-4 bg-slate-100 rounded-lg">
+                <h3 class="font-bold text-slate-800">${habit.name}</h3>
+                <p class="text-slate-600">Completed: ${completed}/${habit.goal}</p>
+              </div>
+            `;
+                })
+                .join("");
+
+            Swal.fire({
+                title: "📊 Your Progress This Week",
+                html: `<div class="space-y-2">${progressTable}</div>`,
+                showConfirmButton: false,
+            });
+        }
+
+        // Resets all habits
+        function resetHabits() {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "This will delete all habits and cannot be undone!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#10B981",
+                cancelButtonColor: "#EF4444",
+                confirmButtonText: "Yes, reset!",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    habits = [];
+                    updateDisplay();
+                    showToast("Habits reset successfully!", "success");
+                }
+            });
+        }
+
+        // Initialize
+        loadHabits();
+    </script>
+</body>
+
+</html>

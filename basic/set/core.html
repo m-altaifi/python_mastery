@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Set Operations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.1.0/dist/full.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  </head>
+
+  <body class="p-6 bg-slate-50 flex items-center justify-center min-h-screen">
+    <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Interactive Panel -->
+      <div class="bg-white p-8 rounded-xl border border-slate-200">
+        <h1 class="text-3xl font-bold text-center mb-2 text-slate-800">
+          🚀 Set Operations
+        </h1>
+        <p class="text-center text-slate-600 mb-6">
+          Perform operations on sets and see Python equivalents
+        </p>
+
+        <!-- Set Display -->
+        <div class="p-4 bg-slate-100 rounded-lg mb-6 min-h-[60px] transition-all duration-300">
+          <div class="mb-2 text-sm font-medium text-slate-700">
+            Current Set:
+          </div>
+          <div id="setDisplay" class="flex flex-wrap gap-2">
+            <span class="text-slate-500">Set is empty.</span>
+          </div>
+        </div>
+
+        <!-- Python Set Display -->
+        <div class="p-4 bg-slate-800 rounded-lg mb-6 font-mono text-sm">
+          <div class="text-slate-400 mb-2"># Python equivalent:</div>
+          <pre><code id="pythonSet" class="text-green-400">my_set = set()</code></pre>
+        </div>
+
+        <!-- Input Field -->
+        <div class="space-y-3 mb-6">
+          <label class="block text-sm font-medium text-slate-700">Enter element or set (separated by spaces):</label>
+          <input
+            type="text"
+            id="inputValue"
+            class="input input-bordered w-full bg-white border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+            placeholder="Type an element or set"
+          />
+          <p class="text-sm text-slate-500">
+            For operations like union, intersection, or difference, enter a set of numbers.
+          </p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="grid grid-cols-2 gap-4">
+          <button
+            class="btn bg-blue-100 hover:bg-blue-200 text-blue-800 border-blue-200 tooltip"
+            data-tip="Python: my_set.add(element)"
+            aria-label="Add Element"
+            onclick="addElement()"
+          >
+            <i class="fas fa-plus mr-2"></i>Add Element
+          </button>
+          <button
+            class="btn bg-red-100 hover:bg-red-200 text-red-800 border-red-200 tooltip"
+            data-tip="Python: my_set.remove(element)"
+            aria-label="Remove Element"
+            onclick="removeElement()"
+          >
+            <i class="fas fa-minus mr-2"></i>Remove Element
+          </button>
+          <button
+            class="btn bg-green-100 hover:bg-green-200 text-green-800 border-green-200 tooltip"
+            data-tip="Python: element in my_set"
+            aria-label="Check Element"
+            onclick="checkElement()"
+          >
+            <i class="fas fa-check mr-2"></i>Check Element
+          </button>
+          <button
+            class="btn bg-purple-100 hover:bg-purple-200 text-purple-800 border-purple-200 tooltip"
+            data-tip="Python: my_set.union(other_set)"
+            aria-label="Union"
+            onclick="performUnion()"
+          >
+            <i class="fas fa-universal-access mr-2"></i>Union
+          </button>
+          <button
+            class="btn bg-indigo-100 hover:bg-indigo-200 text-indigo-800 border-indigo-200 tooltip"
+            data-tip="Python: my_set.intersection(other_set)"
+            aria-label="Intersection"
+            onclick="performIntersection()"
+          >
+            <i class="fas fa-bullseye mr-2"></i>Intersection
+          </button>
+          <button
+            class="btn bg-pink-100 hover:bg-pink-200 text-pink-800 border-pink-200 tooltip"
+            data-tip="Python: my_set.difference(other_set)"
+            aria-label="Difference"
+            onclick="performDifference()"
+          >
+            <i class="fas fa-minus-circle mr-2"></i>Difference
+          </button>
+          <button
+            class="btn bg-gray-100 hover:bg-gray-200 text-gray-800 border-gray-200 col-span-2 tooltip"
+            data-tip="Python: len(my_set)"
+            aria-label="Get Length"
+            onclick="getLength()"
+          >
+            <i class="fas fa-ruler mr-2"></i>Get Length
+          </button>
+          <button
+            class="btn bg-gray-100 hover:bg-gray-200 text-gray-800 border-gray-200 col-span-2 tooltip"
+            data-tip="Python: my_set.clear()"
+            aria-label="Reset Set"
+            onclick="resetSet()"
+          >
+            <i class="fas fa-undo mr-2"></i>Reset Set
+          </button>
+        </div>
+      </div>
+
+      <!-- Python Reference Panel -->
+      <div class="bg-white p-8 rounded-xl border border-slate-200">
+        <h2 class="text-2xl font-bold mb-6 text-slate-800">
+          Python Set Operations Reference
+        </h2>
+
+        <div class="space-y-6">
+          <!-- Initialization -->
+          <div class="p-4 bg-slate-100 rounded-lg">
+            <h3 class="font-medium text-slate-800 mb-2">
+              Set Initialization
+            </h3>
+            <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">my_set = set()  # Empty set
+my_set = {1, 2, 3}  # With initial values</code></pre>
+          </div>
+
+          <!-- Add/Remove Elements -->
+          <div class="p-4 bg-slate-100 rounded-lg">
+            <h3 class="font-medium text-slate-800 mb-2">
+              Adding & Removing Elements
+            </h3>
+            <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">my_set.add(4)  # Add element
+my_set.remove(3)  # Remove element
+my_set.discard(5)  # Remove element (no error if not found)</code></pre>
+          </div>
+
+          <!-- Set Operations -->
+          <div class="p-4 bg-slate-100 rounded-lg">
+            <h3 class="font-medium text-slate-800 mb-2">Set Operations</h3>
+            <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">union_set = my_set.union({4, 5})  # Union
+intersection_set = my_set.intersection({2, 3})  # Intersection
+difference_set = my_set.difference({1, 2})  # Difference</code></pre>
+          </div>
+
+          <!-- Other Operations -->
+          <div class="p-4 bg-slate-100 rounded-lg">
+            <h3 class="font-medium text-slate-800 mb-2">Other Operations</h3>
+            <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">length = len(my_set)  # Get length
+exists = 3 in my_set  # Check if element exists</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let mySet = new Set();
+
+      // Updates the set display and Python equivalent
+      function updateDisplay() {
+        const setDisplay = document.getElementById("setDisplay");
+        const pythonSet = document.getElementById("pythonSet");
+
+        if (mySet.size === 0) {
+          setDisplay.innerHTML = '<span class="text-slate-500">Set is empty.</span>';
+          pythonSet.textContent = "my_set = set()";
+        } else {
+          setDisplay.innerHTML = Array.from(mySet)
+            .map(
+              (element) => `
+                <div class="px-3 py-2 rounded-lg bg-white border border-slate-200 flex items-center gap-2 transition-all duration-200 hover:scale-105">
+                  <span class="font-medium text-slate-700">${element}</span>
+                </div>
+              `
+            )
+            .join("");
+          pythonSet.textContent = `my_set = {${Array.from(mySet).join(", ")}}`;
+        }
+        hljs.highlightAll(); // Highlight Python code
+      }
+
+      // Gets the input value and clears the input field
+      function getInputValue() {
+        const inputValue = document.getElementById("inputValue").value.trim();
+        document.getElementById("inputValue").value = ""; // Clear input field
+        return inputValue;
+      }
+
+      // Shows a toast notification
+      function showToast(message, type = "info") {
+        const bgColors = {
+          success: "#10B981",
+          error: "#EF4444",
+          info: "#3B82F6",
+        };
+
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: type,
+          title: message,
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+          background: bgColors[type],
+          color: "#ffffff",
+          iconColor: "#ffffff",
+        });
+      }
+
+      // Adds an element to the set
+      function addElement() {
+        const input = getInputValue();
+        if (!input) {
+          showToast("Please enter an element.", "error");
+          return;
+        }
+
+        const elements = input.split(" ").map((e) => parseInt(e.trim()));
+        if (elements.some(isNaN)) {
+          showToast("Invalid input. Please enter valid integers.", "error");
+          return;
+        }
+
+        elements.forEach((element) => mySet.add(element));
+        updateDisplay();
+        showToast("Element(s) added successfully!", "success");
+      }
+
+      // Removes an element from the set
+      function removeElement() {
+        const input = getInputValue();
+        if (!input) {
+          showToast("Please enter an element.", "error");
+          return;
+        }
+
+        const element = parseInt(input);
+        if (isNaN(element)) {
+          showToast("Invalid input. Please enter a valid integer.", "error");
+          return;
+        }
+
+        if (mySet.has(element)) {
+          mySet.delete(element);
+          updateDisplay();
+          showToast("Element removed successfully!", "success");
+        } else {
+          showToast("Element not found in set.", "error");
+        }
+      }
+
+      // Checks if an element exists in the set
+      function checkElement() {
+        const input = getInputValue();
+        if (!input) {
+          showToast("Please enter an element.", "error");
+          return;
+        }
+
+        const element = parseInt(input);
+        if (isNaN(element)) {
+          showToast("Invalid input. Please enter a valid integer.", "error");
+          return;
+        }
+
+        if (mySet.has(element)) {
+          showToast(`Element ${element} exists in the set.`, "success");
+        } else {
+          showToast(`Element ${element} does not exist in the set.`, "error");
+        }
+      }
+
+      // Performs union with another set
+      function performUnion() {
+        const input = getInputValue();
+        if (!input) {
+          showToast("Please enter a set of numbers.", "error");
+          return;
+        }
+
+        const elements = input.split(" ").map((e) => parseInt(e.trim()));
+        if (elements.some(isNaN)) {
+          showToast("Invalid input. Please enter valid integers.", "error");
+          return;
+        }
+
+        const newSet = new Set(elements);
+        const unionSet = new Set([...mySet, ...newSet]);
+        showToast(`Union: {${Array.from(unionSet).join(", ")}}`, "info");
+      }
+
+      // Performs intersection with another set
+      function performIntersection() {
+        const input = getInputValue();
+        if (!input) {
+          showToast("Please enter a set of numbers.", "error");
+          return;
+        }
+
+        const elements = input.split(" ").map((e) => parseInt(e.trim()));
+        if (elements.some(isNaN)) {
+          showToast("Invalid input. Please enter valid integers.", "error");
+          return;
+        }
+
+        const newSet = new Set(elements);
+        const intersectionSet = new Set([...mySet].filter((x) => newSet.has(x)));
+        showToast(`Intersection: {${Array.from(intersectionSet).join(", ")}}`, "info");
+      }
+
+      // Performs difference with another set
+      function performDifference() {
+        const input = getInputValue();
+        if (!input) {
+          showToast("Please enter a set of numbers.", "error");
+          return;
+        }
+
+        const elements = input.split(" ").map((e) => parseInt(e.trim()));
+        if (elements.some(isNaN)) {
+          showToast("Invalid input. Please enter valid integers.", "error");
+          return;
+        }
+
+        const newSet = new Set(elements);
+        const differenceSet = new Set([...mySet].filter((x) => !newSet.has(x)));
+        showToast(`Difference: {${Array.from(differenceSet).join(", ")}}`, "info");
+      }
+
+      // Gets the length of the set
+      function getLength() {
+        showToast(`Set length: ${mySet.size}`, "info");
+      }
+
+      // Resets the set
+      function resetSet() {
+        Swal.fire({
+          title: "Are you sure?",
+          text: "This will delete all elements and cannot be undone!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#10B981",
+          cancelButtonColor: "#EF4444",
+          confirmButtonText: "Yes, reset!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            mySet.clear();
+            updateDisplay();
+            showToast("Set reset successfully!", "success");
+          }
+        });
+      }
+
+      // Initialize
+      updateDisplay();
+    </script>
+  </body>
+</html>

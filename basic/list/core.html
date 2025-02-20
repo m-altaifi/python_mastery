@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Array Operations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.1.0/dist/full.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="p-6 bg-slate-50 flex items-center justify-center min-h-screen">
+    <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Interactive Panel -->
+        <div class="bg-white p-8 rounded-xl border border-slate-200">
+            <h1 class="text-3xl font-bold text-center mb-2 text-slate-800">Array Operations</h1>
+            <p class="text-center text-slate-600 mb-6">Interact with the array and see Python equivalents</p>
+
+            <!-- Array Display -->
+            <div class="p-4 bg-slate-100 rounded-lg mb-6 min-h-[60px] transition-all duration-300">
+                <div class="mb-2 text-sm font-medium text-slate-700">Current Array:</div>
+                <div id="arrayDisplay" class="flex flex-wrap gap-2">
+                    <span class="text-slate-500">Array is empty.</span>
+                </div>
+            </div>
+
+            <!-- Python Array Display -->
+            <div class="p-4 bg-slate-800 rounded-lg mb-6 font-mono text-sm">
+                <div class="text-slate-400 mb-2"># Python equivalent:</div>
+                <pre><code id="pythonArray" class="text-green-400">my_list = []</code></pre>
+            </div>
+
+            <!-- Input Field -->
+            <div class="space-y-3 mb-6">
+                <label class="block text-sm font-medium text-slate-700">Enter a number or index:</label>
+                <input type="number" id="inputValue"
+                    class="input input-bordered w-full bg-white border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                    placeholder="Type a number or index">
+                <p class="text-sm text-slate-500">For "Remove by Index" or "Access by Index," enter the index of the element.</p>
+            </div>
+
+            <!-- Buttons -->
+            <div class="grid grid-cols-2 gap-4">
+                <button class="btn bg-blue-100 hover:bg-blue-200 text-blue-800 border-blue-200 tooltip" data-tip="Python: my_list.append(x)" onclick="addElement()">
+                    <i class="fas fa-plus mr-2"></i>Add Element
+                </button>
+                <button class="btn bg-red-100 hover:bg-red-200 text-red-800 border-red-200 tooltip" data-tip="Python: my_list.remove(x)" onclick="removeByValue()">
+                    <i class="fas fa-minus mr-2"></i>Remove by Value
+                </button>
+                <button class="btn bg-purple-100 hover:bg-purple-200 text-purple-800 border-purple-200 tooltip" data-tip="Python: my_list.pop(i)" onclick="removeByIndex()">
+                    <i class="fas fa-trash mr-2"></i>Remove by Index
+                </button>
+                <button class="btn bg-green-100 hover:bg-green-200 text-green-800 border-green-200 tooltip" data-tip="Python: my_list.reverse()" onclick="reverseArray()">
+                    <i class="fas fa-exchange-alt mr-2"></i>Reverse
+                </button>
+                <button class="btn bg-yellow-100 hover:bg-yellow-200 text-yellow-800 border-yellow-200 tooltip" data-tip="Python: my_list.sort()" onclick="sortArray()">
+                    <i class="fas fa-sort mr-2"></i>Sort
+                </button>
+                <button class="btn bg-indigo-100 hover:bg-indigo-200 text-indigo-800 border-indigo-200 tooltip" data-tip="Python: len(my_list)" onclick="getLength()">
+                    <i class="fas fa-ruler mr-2"></i>Get Length
+                </button>
+                <button class="btn bg-gray-100 hover:bg-gray-200 text-gray-800 border-gray-200 col-span-2 tooltip" data-tip="Python: my_list.clear()" onclick="resetArray()">
+                    <i class="fas fa-undo mr-2"></i>Reset Array
+                </button>
+            </div>
+        </div>
+
+        <!-- Python Reference Panel -->
+        <div class="bg-white p-8 rounded-xl border border-slate-200">
+            <h2 class="text-2xl font-bold mb-6 text-slate-800">Python List Operations Reference</h2>
+
+            <div class="space-y-6">
+                <!-- Add Element -->
+                <div class="p-4 bg-slate-100 rounded-lg">
+                    <h3 class="font-medium text-slate-800 mb-2">Adding Elements</h3>
+                    <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">my_list = [1, 2, 3]
+my_list.append(4) # Adds 4 to end
+my_list.insert(0, 0) # Adds 0 at index 0
+my_list.extend([5, 6]) # Adds multiple items</code></pre>
+                </div>
+
+                <!-- Remove Elements -->
+                <div class="p-4 bg-slate-100 rounded-lg">
+                    <h3 class="font-medium text-slate-800 mb-2">Removing Elements</h3>
+                    <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">my_list.remove(3) # Removes first 3
+my_list.pop() # Removes last item
+my_list.pop(0) # Removes item at index 0
+del my_list[1] # Deletes item at index 1</code></pre>
+                </div>
+
+                <!-- Other Operations -->
+                <div class="p-4 bg-slate-100 rounded-lg">
+                    <h3 class="font-medium text-slate-800 mb-2">Other Operations</h3>
+                    <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">len(my_list) # Get length
+my_list.reverse() # Reverse list
+my_list.sort() # Sort list
+my_list.clear() # Remove all items</code></pre>
+                </div>
+
+                <!-- List Slicing -->
+                <div class="p-4 bg-slate-100 rounded-lg">
+                    <h3 class="font-medium text-slate-800 mb-2">List Slicing</h3>
+                    <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">my_list[1:4] # Items from index 1 to 3
+my_list[:3] # First three items
+my_list[2:] # Items from index 2 to end
+my_list[-1] # Last item</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let myArray = [];
+
+        function updateDisplay() {
+            const arrayDisplay = document.getElementById('arrayDisplay');
+            const pythonArray = document.getElementById('pythonArray');
+
+            if (myArray.length === 0) {
+                arrayDisplay.innerHTML = '<span class="text-slate-500">Array is empty.</span>';
+                pythonArray.textContent = 'my_list = []';
+            } else {
+                arrayDisplay.innerHTML = myArray.map((item, index) => `
+                    <div class="px-3 py-2 rounded-lg bg-white border border-slate-200 flex items-center gap-2 transition-all duration-200 hover:scale-105">
+                        <span class="text-slate-500 text-sm">${index}:</span>
+                        <span class="font-medium text-slate-700">${item}</span>
+                    </div>
+                `).join('');
+                pythonArray.textContent = `my_list = [${myArray.join(', ')}]`;
+            }
+            hljs.highlightAll(); // Highlight Python code
+        }
+
+        function getInputValue() {
+            return document.getElementById('inputValue').value.trim();
+        }
+
+        function showToast(message, type = 'info') {
+            const bgColors = {
+                success: '#10B981',
+                error: '#EF4444',
+                info: '#3B82F6'
+            };
+
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: type,
+                title: message,
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                background: bgColors[type],
+                color: '#ffffff',
+                iconColor: '#ffffff'
+            });
+        }
+
+        function addElement() {
+            const num = getInputValue();
+            if (!isNaN(num) && num !== "") {
+                myArray.push(parseInt(num));
+                updateDisplay();
+                document.getElementById('inputValue').value = "";
+                showToast('Element added successfully!', 'success');
+            } else {
+                showToast('Please enter a valid number.', 'error');
+            }
+        }
+
+        function removeByValue() {
+            const num = getInputValue();
+            const index = myArray.indexOf(parseInt(num));
+            if (index !== -1) {
+                myArray.splice(index, 1);
+                updateDisplay();
+                document.getElementById('inputValue').value = "";
+                showToast('Element removed successfully!', 'success');
+            } else {
+                showToast('Number not found in the array.', 'error');
+            }
+        }
+
+        function removeByIndex() {
+            const index = getInputValue();
+            if (!isNaN(index) && index >= 0 && index < myArray.length) {
+                myArray.splice(index, 1);
+                updateDisplay();
+                document.getElementById('inputValue').value = "";
+                showToast('Element removed successfully!', 'success');
+            } else {
+                showToast('Invalid index. Enter a valid position in the array.', 'error');
+            }
+        }
+
+        function reverseArray() {
+            if (myArray.length > 0) {
+                myArray.reverse();
+                updateDisplay();
+                showToast('Array reversed successfully!', 'success');
+            } else {
+                showToast('Array is empty.', 'error');
+            }
+        }
+
+        function sortArray() {
+            if (myArray.length > 0) {
+                myArray.sort((a, b) => a - b);
+                updateDisplay();
+                showToast('Array sorted successfully!', 'success');
+            } else {
+                showToast('Array is empty.', 'error');
+            }
+        }
+
+        function getLength() {
+            showToast(`Array length: ${myArray.length}`, 'info');
+        }
+
+        function resetArray() {
+            myArray = [];
+            updateDisplay();
+            showToast('Array reset successfully!', 'success');
+        }
+
+        updateDisplay();
+    </script>
+</body>
+
+</html>

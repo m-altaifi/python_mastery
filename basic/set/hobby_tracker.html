@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unique Hobby Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.1.0/dist/full.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  </head>
+
+  <body class="p-6 bg-slate-50 flex items-center justify-center min-h-screen">
+    <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Interactive Panel -->
+      <div class="bg-white p-8 rounded-xl border border-slate-200">
+        <h1 class="text-3xl font-bold text-center mb-2 text-slate-800">
+          🌟 Unique Hobby Tracker
+        </h1>
+        <p class="text-center text-slate-600 mb-6">
+          Track your unique hobbies and manage them easily
+        </p>
+
+        <!-- Hobby Display -->
+        <div class="p-4 bg-slate-100 rounded-lg mb-6 min-h-[60px] transition-all duration-300">
+          <div class="mb-2 text-sm font-medium text-slate-700">
+            Current Hobbies:
+          </div>
+          <div id="hobbyDisplay" class="flex flex-wrap gap-2">
+            <span class="text-slate-500">No hobbies found. Add one first!</span>
+          </div>
+        </div>
+
+        <!-- Python Hobby Display -->
+        <div class="p-4 bg-slate-800 rounded-lg mb-6 font-mono text-sm">
+          <div class="text-slate-400 mb-2"># Python equivalent:</div>
+          <pre><code id="pythonHobbies" class="text-green-400">hobbies = set()</code></pre>
+        </div>
+
+        <!-- Input Field -->
+        <div class="space-y-3 mb-6">
+          <label class="block text-sm font-medium text-slate-700">Enter hobby name:</label>
+          <input
+            type="text"
+            id="inputValue"
+            class="input input-bordered w-full bg-white border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+            placeholder="Type a hobby name"
+          />
+          <p class="text-sm text-slate-500">
+            For "Check Hobby" or "Remove Hobby," enter the hobby name.
+          </p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="grid grid-cols-2 gap-4">
+          <button
+            class="btn bg-blue-100 hover:bg-blue-200 text-blue-800 border-blue-200 tooltip"
+            data-tip="Python: hobbies.add(hobby)"
+            aria-label="Add Hobby"
+            onclick="addHobby()"
+          >
+            <i class="fas fa-plus mr-2"></i>Add Hobby
+          </button>
+          <button
+            class="btn bg-green-100 hover:bg-green-200 text-green-800 border-green-200 tooltip"
+            data-tip="Python: hobby in hobbies"
+            aria-label="Check Hobby"
+            onclick="checkHobby()"
+          >
+            <i class="fas fa-check mr-2"></i>Check Hobby
+          </button>
+          <button
+            class="btn bg-red-100 hover:bg-red-200 text-red-800 border-red-200 tooltip"
+            data-tip="Python: hobbies.remove(hobby)"
+            aria-label="Remove Hobby"
+            onclick="removeHobby()"
+          >
+            <i class="fas fa-minus mr-2"></i>Remove Hobby
+          </button>
+          <button
+            class="btn bg-gray-100 hover:bg-gray-200 text-gray-800 border-gray-200 col-span-2 tooltip"
+            data-tip="Python: hobbies.clear()"
+            aria-label="Clear Hobbies"
+            onclick="clearHobbies()"
+          >
+            <i class="fas fa-undo mr-2"></i>Clear Hobbies
+          </button>
+        </div>
+      </div>
+
+      <!-- Python Reference Panel -->
+      <div class="bg-white p-8 rounded-xl border border-slate-200">
+        <h2 class="text-2xl font-bold mb-6 text-slate-800">
+          Python Hobby Tracker Reference
+        </h2>
+
+        <div class="space-y-6">
+          <!-- Initialization -->
+          <div class="p-4 bg-slate-100 rounded-lg">
+            <h3 class="font-medium text-slate-800 mb-2">
+              Set Initialization
+            </h3>
+            <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">hobbies = set()  # Empty set
+hobbies = {"Reading", "Cooking"}  # With initial values</code></pre>
+          </div>
+
+          <!-- Add/Remove Hobbies -->
+          <div class="p-4 bg-slate-100 rounded-lg">
+            <h3 class="font-medium text-slate-800 mb-2">
+              Adding & Removing Hobbies
+            </h3>
+            <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">hobbies.add("Gardening")  # Add hobby
+hobbies.remove("Cooking")  # Remove hobby
+hobbies.discard("Reading")  # Remove hobby (no error if not found)</code></pre>
+          </div>
+
+          <!-- Check Hobbies -->
+          <div class="p-4 bg-slate-100 rounded-lg">
+            <h3 class="font-medium text-slate-800 mb-2">
+              Checking Hobbies
+            </h3>
+            <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">if "Reading" in hobbies:
+    print("Hobby exists!")</code></pre>
+          </div>
+
+          <!-- Clear Hobbies -->
+          <div class="p-4 bg-slate-100 rounded-lg">
+            <h3 class="font-medium text-slate-800 mb-2">
+              Clearing Hobbies
+            </h3>
+            <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">hobbies.clear()  # Clear all hobbies</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let hobbies = new Set();
+
+      // Load hobbies from localStorage
+      function loadHobbies() {
+        const storedHobbies = localStorage.getItem("hobbies");
+        if (storedHobbies) {
+          hobbies = new Set(JSON.parse(storedHobbies));
+        }
+        updateDisplay();
+      }
+
+      // Save hobbies to localStorage
+      function saveHobbies() {
+        localStorage.setItem("hobbies", JSON.stringify(Array.from(hobbies)));
+      }
+
+      // Updates the hobby display and Python equivalent
+      function updateDisplay() {
+        const hobbyDisplay = document.getElementById("hobbyDisplay");
+        const pythonHobbies = document.getElementById("pythonHobbies");
+
+        if (hobbies.size === 0) {
+          hobbyDisplay.innerHTML = '<span class="text-slate-500">No hobbies found. Add one first!</span>';
+          pythonHobbies.textContent = "hobbies = set()";
+        } else {
+          hobbyDisplay.innerHTML = Array.from(hobbies)
+            .map(
+              (hobby) => `
+                <div class="px-3 py-2 rounded-lg bg-white border border-slate-200 flex items-center gap-2 transition-all duration-200 hover:scale-105">
+                  <span class="font-medium text-slate-700">${hobby}</span>
+                </div>
+              `
+            )
+            .join("");
+          pythonHobbies.textContent = `hobbies = {${Array.from(hobbies).map((h) => `"${h}"`).join(", ")}}`;
+        }
+        hljs.highlightAll(); // Highlight Python code
+        saveHobbies(); // Save hobbies to localStorage
+      }
+
+      // Gets the input value and clears the input field
+      function getInputValue() {
+        const inputValue = document.getElementById("inputValue").value.trim();
+        document.getElementById("inputValue").value = ""; // Clear input field
+        return inputValue;
+      }
+
+      // Shows a toast notification
+      function showToast(message, type = "info") {
+        const bgColors = {
+          success: "#10B981",
+          error: "#EF4444",
+          info: "#3B82F6",
+        };
+
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: type,
+          title: message,
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+          background: bgColors[type],
+          color: "#ffffff",
+          iconColor: "#ffffff",
+        });
+      }
+
+      // Adds a hobby to the set
+      function addHobby() {
+        const hobby = getInputValue();
+        if (!hobby) {
+          showToast("Please enter a hobby name.", "error");
+          return;
+        }
+
+        if (hobbies.has(hobby)) {
+          showToast("Hobby already exists!", "error");
+        } else {
+          hobbies.add(hobby);
+          updateDisplay();
+          showToast("Hobby added successfully!", "success");
+        }
+      }
+
+      // Checks if a hobby exists in the set
+      function checkHobby() {
+        const hobby = getInputValue();
+        if (!hobby) {
+          showToast("Please enter a hobby name.", "error");
+          return;
+        }
+
+        if (hobbies.has(hobby)) {
+          showToast(`Hobby "${hobby}" exists!`, "success");
+        } else {
+          showToast(`Hobby "${hobby}" does not exist!`, "error");
+        }
+      }
+
+      // Removes a hobby from the set
+      function removeHobby() {
+        const hobby = getInputValue();
+        if (!hobby) {
+          showToast("Please enter a hobby name.", "error");
+          return;
+        }
+
+        if (hobbies.has(hobby)) {
+          hobbies.delete(hobby);
+          updateDisplay();
+          showToast("Hobby removed successfully!", "success");
+        } else {
+          showToast("Hobby not found!", "error");
+        }
+      }
+
+      // Clears all hobbies from the set
+      function clearHobbies() {
+        Swal.fire({
+          title: "Are you sure?",
+          text: "This will delete all hobbies and cannot be undone!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#10B981",
+          cancelButtonColor: "#EF4444",
+          confirmButtonText: "Yes, clear!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            hobbies.clear();
+            updateDisplay();
+            showToast("All hobbies cleared!", "success");
+          }
+        });
+      }
+
+      // Initialize
+      loadHobbies();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To-Do List Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.1.0/dist/full.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  </head>
+
+  <body class="p-6 bg-slate-50 flex items-center justify-center min-h-screen">
+    <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Interactive Panel -->
+      <div class="bg-white p-8 rounded-xl border border-slate-200">
+        <h1 class="text-3xl font-bold text-center mb-2 text-slate-800">
+          🚀 To-Do List Manager
+        </h1>
+        <p class="text-center text-slate-600 mb-6">
+          Manage your tasks and track your progress
+        </p>
+
+        <!-- To-Do List Display -->
+        <div class="p-4 bg-slate-100 rounded-lg mb-6 min-h-[60px] transition-all duration-300">
+          <div class="mb-2 text-sm font-medium text-slate-700">
+            Current To-Do List:
+          </div>
+          <div id="todoDisplay" class="flex flex-col gap-2">
+            <span class="text-slate-500">No tasks found. Add one first!</span>
+          </div>
+        </div>
+
+        <!-- Python To-Do List Display -->
+        <div class="p-4 bg-slate-800 rounded-lg mb-6 font-mono text-sm">
+          <div class="text-slate-400 mb-2"># Python equivalent:</div>
+          <pre><code id="pythonTodo" class="text-green-400">todo_list = []</code></pre>
+        </div>
+
+        <!-- Input Field -->
+        <div class="space-y-3 mb-6">
+          <label class="block text-sm font-medium text-slate-700">Enter task name or index:</label>
+          <input
+            type="text"
+            id="inputValue"
+            class="input input-bordered w-full bg-white border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+            placeholder="Type a task name or index"
+          />
+          <p class="text-sm text-slate-500">
+            For "Mark as Completed" or "Remove Task," enter the task index.
+          </p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="grid grid-cols-2 gap-4">
+          <button
+            class="btn bg-blue-100 hover:bg-blue-200 text-blue-800 border-blue-200 tooltip"
+            data-tip="Python: todo_list.append({'name': task, 'completed': False})"
+            aria-label="Add Task"
+            onclick="addTask()"
+          >
+            <i class="fas fa-plus mr-2"></i>Add Task
+          </button>
+          <button
+            class="btn bg-green-100 hover:bg-green-200 text-green-800 border-green-200 tooltip"
+            data-tip="Python: todo_list[index]['completed'] = True"
+            aria-label="Mark as Completed"
+            onclick="markTaskCompleted()"
+          >
+            <i class="fas fa-check mr-2"></i>Mark as Completed
+          </button>
+          <button
+            class="btn bg-red-100 hover:bg-red-200 text-red-800 border-red-200 tooltip"
+            data-tip="Python: todo_list.pop(index)"
+            aria-label="Remove Task"
+            onclick="removeTask()"
+          >
+            <i class="fas fa-trash mr-2"></i>Remove Task
+          </button>
+          <button
+            class="btn bg-gray-100 hover:bg-gray-200 text-gray-800 border-gray-200 col-span-2 tooltip"
+            data-tip="Python: todo_list.clear()"
+            aria-label="Reset To-Do List"
+            onclick="resetTodoList()"
+          >
+            <i class="fas fa-undo mr-2"></i>Reset To-Do List
+          </button>
+        </div>
+      </div>
+
+      <!-- Python Reference Panel -->
+      <div class="bg-white p-8 rounded-xl border border-slate-200">
+        <h2 class="text-2xl font-bold mb-6 text-slate-800">
+          Python To-Do List Reference
+        </h2>
+
+        <div class="space-y-6">
+          <!-- Initialization -->
+          <div class="p-4 bg-slate-100 rounded-lg">
+            <h3 class="font-medium text-slate-800 mb-2">
+              To-Do List Initialization
+            </h3>
+            <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">todo_list = []  # Empty list
+todo_list = [{"name": "Task 1", "completed": False}]  # With initial values</code></pre>
+          </div>
+
+          <!-- Add/Remove Tasks -->
+          <div class="p-4 bg-slate-100 rounded-lg">
+            <h3 class="font-medium text-slate-800 mb-2">
+              Adding & Removing Tasks
+            </h3>
+            <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">todo_list.append({"name": "Task 2", "completed": False})  # Add task
+todo_list.pop(0)  # Remove task by index</code></pre>
+          </div>
+
+          <!-- Mark as Completed -->
+          <div class="p-4 bg-slate-100 rounded-lg">
+            <h3 class="font-medium text-slate-800 mb-2">
+              Marking Tasks as Completed
+            </h3>
+            <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">todo_list[0]["completed"] = True  # Mark task as completed</code></pre>
+          </div>
+
+          <!-- View Tasks -->
+          <div class="p-4 bg-slate-100 rounded-lg">
+            <h3 class="font-medium text-slate-800 mb-2">Viewing Tasks</h3>
+            <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">for task in todo_list:
+    print(f"{task['name']} - {'✓ Done' if task['completed'] else '✗ Not Done'}")</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let todoList = [];
+
+      // Load tasks from localStorage
+      function loadTasks() {
+        const storedTasks = localStorage.getItem("todoList");
+        if (storedTasks) {
+          todoList = JSON.parse(storedTasks);
+        }
+        updateDisplay();
+      }
+
+      // Save tasks to localStorage
+      function saveTasks() {
+        localStorage.setItem("todoList", JSON.stringify(todoList));
+      }
+
+      // Updates the to-do list display and Python equivalent
+      function updateDisplay() {
+        const todoDisplay = document.getElementById("todoDisplay");
+        const pythonTodo = document.getElementById("pythonTodo");
+
+        if (todoList.length === 0) {
+          todoDisplay.innerHTML = '<span class="text-slate-500">No tasks found. Add one first!</span>';
+          pythonTodo.textContent = "todo_list = []";
+        } else {
+          todoDisplay.innerHTML = todoList
+            .map(
+              (task, index) => `
+                <div class="px-3 py-2 rounded-lg bg-white border border-slate-200 flex items-center gap-2 transition-all duration-200 hover:scale-105">
+                  <span class="text-slate-500 text-sm">${index}:</span>
+                  <span class="font-medium text-slate-700">${task.name}</span>
+                  <span class="ml-auto text-sm ${
+                    task.completed ? "text-green-500" : "text-red-500"
+                  }">${task.completed ? "✓ Done" : "✗ Not Done"}</span>
+                </div>
+              `
+            )
+            .join("");
+          pythonTodo.textContent = `todo_list = ${JSON.stringify(todoList, null, 2)}`;
+        }
+        hljs.highlightAll(); // Highlight Python code
+        saveTasks(); // Save tasks to localStorage
+      }
+
+      // Gets the input value and clears the input field
+      function getInputValue() {
+        const inputValue = document.getElementById("inputValue").value.trim();
+        document.getElementById("inputValue").value = ""; // Clear input field
+        return inputValue;
+      }
+
+      // Shows a toast notification
+      function showToast(message, type = "info") {
+        const bgColors = {
+          success: "#10B981",
+          error: "#EF4444",
+          info: "#3B82F6",
+        };
+
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: type,
+          title: message,
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+          background: bgColors[type],
+          color: "#ffffff",
+          iconColor: "#ffffff",
+        });
+      }
+
+      // Adds a task to the to-do list
+      function addTask() {
+        const taskName = getInputValue();
+        if (!taskName) {
+          showToast("Please enter a task name.", "error");
+          return;
+        }
+
+        todoList.push({ name: taskName, completed: false });
+        updateDisplay();
+        showToast("Task added successfully!", "success");
+      }
+
+      // Marks a task as completed
+      function markTaskCompleted() {
+        if (todoList.length === 0) {
+          showToast("No tasks found. Add one first!", "error");
+          return;
+        }
+
+        const taskList = todoList
+          .map(
+            (task, index) => `
+              <button
+                onclick="completeTask(${index})"
+                class="w-full btn bg-green-100 hover:bg-green-200 text-green-800 border-green-200"
+              >
+                ${task.name}
+              </button>
+            `
+          )
+          .join("");
+
+        Swal.fire({
+          title: "Select a Task to Mark as Completed",
+          html: `<div class="space-y-2">${taskList}</div>`,
+          showConfirmButton: false,
+        });
+      }
+
+      // Completes a specific task
+      function completeTask(index) {
+        const task = todoList[index];
+        task.completed = true;
+        updateDisplay();
+        showToast(`Task "${task.name}" marked as completed!`, "success");
+        Swal.close();
+      }
+
+      // Removes a task from the to-do list
+      function removeTask() {
+        if (todoList.length === 0) {
+          showToast("No tasks found. Add one first!", "error");
+          return;
+        }
+
+        const taskList = todoList
+          .map(
+            (task, index) => `
+              <button
+                onclick="deleteTask(${index})"
+                class="w-full btn bg-red-100 hover:bg-red-200 text-red-800 border-red-200"
+              >
+                ${task.name}
+              </button>
+            `
+          )
+          .join("");
+
+        Swal.fire({
+          title: "Select a Task to Remove",
+          html: `<div class="space-y-2">${taskList}</div>`,
+          showConfirmButton: false,
+        });
+      }
+
+      // Deletes a specific task
+      function deleteTask(index) {
+        const task = todoList.splice(index, 1)[0];
+        updateDisplay();
+        showToast(`Task "${task.name}" removed successfully!`, "success");
+        Swal.close();
+      }
+
+      // Resets the to-do list
+      function resetTodoList() {
+        Swal.fire({
+          title: "Are you sure?",
+          text: "This will delete all tasks and cannot be undone!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#10B981",
+          cancelButtonColor: "#EF4444",
+          confirmButtonText: "Yes, reset!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            todoList = [];
+            updateDisplay();
+            showToast("To-Do List reset successfully!", "success");
+          }
+        });
+      }
+
+      // Initialize
+      loadTasks();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>💰 Personal Finance Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.1.0/dist/full.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+</head>
+<body class="p-6 bg-slate-50 flex items-center justify-center min-h-screen">
+    <div class="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Left Column -->
+        <div class="space-y-8">
+            <!-- Interactive Panel -->
+            <div class="bg-white p-8 rounded-xl border border-slate-200">
+                <h1 class="text-3xl font-bold text-center mb-6 text-slate-800">💰 Personal Finance Tracker</h1>
+
+                <!-- Transactions Display -->
+                <div class="p-4 bg-slate-100 rounded-lg mb-6">
+                    <div class="mb-2 text-sm font-medium text-slate-700">Current Transactions:</div>
+                    <div id="transactionsDisplay" class="text-slate-600">No transactions yet.</div>
+                </div>
+
+                <!-- Operations Menu -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                    <button onclick="viewTransactions()" class="btn bg-blue-100 hover:bg-blue-200 text-blue-800 border-blue-200">
+                        <i class="fas fa-eye mr-2"></i>View Transactions
+                    </button>
+                    <button onclick="addTransaction()" class="btn bg-green-100 hover:bg-green-200 text-green-800 border-green-200">
+                        <i class="fas fa-plus mr-2"></i>Add Transaction
+                    </button>
+                    <button onclick="viewSummary()" class="btn bg-purple-100 hover:bg-purple-200 text-purple-800 border-purple-200">
+                        <i class="fas fa-chart-bar mr-2"></i>View Summary
+                    </button>
+                    <button onclick="viewSpendingByCategory()" class="btn bg-yellow-100 hover:bg-yellow-200 text-yellow-800 border-yellow-200">
+                        <i class="fas fa-shopping-cart mr-2"></i>Spending by Category
+                    </button>
+                </div>
+
+                <!-- Result Display -->
+                <div class="p-4 bg-slate-100 rounded-lg mb-6">
+                    <div class="mb-2 text-sm font-medium text-slate-700">Result:</div>
+                    <div id="resultDisplay" class="text-slate-600">No operation performed yet.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Python Reference Panel -->
+        <div class="bg-white p-8 rounded-xl border border-slate-200">
+            <h2 class="text-2xl font-bold mb-6 text-slate-800">Python Finance Operations Reference</h2>
+            <div class="space-y-6">
+                <!-- View Transactions -->
+                <div class="p-4 bg-slate-100 rounded-lg">
+                    <h3 class="font-medium text-slate-800 mb-2">View Transactions</h3>
+                    <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">for t in transactions:
+    print(f"{t[0]}: {t[1]} (${t[2]}) - {t[3]}")</code></pre>
+                    <p class="text-sm text-slate-600 mt-2">Display all transactions in a readable format.</p>
+                </div>
+
+                <!-- Add Transaction -->
+                <div class="p-4 bg-slate-100 rounded-lg">
+                    <h3 class="font-medium text-slate-800 mb-2">Add Transaction</h3>
+                    <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">date = input("Enter date (YYYY-MM-DD): ")
+category = input("Enter category: ")
+amount = float(input("Enter amount: "))
+type_ = input("Enter type (income/expense): ")
+transactions.append((date, category, amount, type_))</code></pre>
+                    <p class="text-sm text-slate-600 mt-2">Add a new transaction to the list.</p>
+                </div>
+
+                <!-- View Summary -->
+                <div class="p-4 bg-slate-100 rounded-lg">
+                    <h3 class="font-medium text-slate-800 mb-2">View Summary</h3>
+                    <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">income = sum(t[2] for t in transactions if t[3] == "income")
+expenses = sum(t[2] for t in transactions if t[3] == "expense")
+net_savings = income - expenses
+print(f"Income: ${income}, Expenses: ${expenses}, Net Savings: ${net_savings}")</code></pre>
+                    <p class="text-sm text-slate-600 mt-2">Calculate and display a financial summary.</p>
+                </div>
+
+                <!-- View Spending by Category -->
+                <div class="p-4 bg-slate-100 rounded-lg">
+                    <h3 class="font-medium text-slate-800 mb-2">View Spending by Category</h3>
+                    <pre><code class="language-python bg-slate-800 p-3 rounded text-sm">categories = {}
+for t in transactions:
+    if t[1] in categories:
+        categories[t[1]] += t[2]
+    else:
+        categories[t[1]] = t[2]
+for category, total in categories.items():
+    print(f"{category}: ${total}")</code></pre>
+                    <p class="text-sm text-slate-600 mt-2">Group and display spending by category.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let transactions = [];
+
+        // Function to display transactions
+        function viewTransactions() {
+            const transactionsDisplay = document.getElementById("transactionsDisplay");
+            if (transactions.length === 0) {
+                transactionsDisplay.textContent = "No transactions yet.";
+                document.getElementById("resultDisplay").textContent = "No transactions to display.";
+                return;
+            }
+
+            transactionsDisplay.innerHTML = transactions
+                .map((t, idx) => `<div>${idx + 1}. ${t[0]}: ${t[1]} ($${t[2].toFixed(2)}) - ${t[3]}</div>`)
+                .join("");
+            document.getElementById("resultDisplay").textContent = "Displayed all transactions.";
+        }
+
+        // Function to add a new transaction
+        function addTransaction() {
+            Swal.fire({
+                title: "Add Transaction",
+                html: `
+                    <input id="date" class="swal2-input" placeholder="Date (YYYY-MM-DD)">
+                    <input id="category" class="swal2-input" placeholder="Category">
+                    <input id="amount" class="swal2-input" placeholder="Amount">
+                    <select id="type" class="swal2-input">
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                    </select>
+                `,
+                focusConfirm: false,
+                preConfirm: () => {
+                    const date = document.getElementById("date").value;
+                    const category = document.getElementById("category").value;
+                    const amount = parseFloat(document.getElementById("amount").value);
+                    const type = document.getElementById("type").value;
+
+                    if (!date || !category || isNaN(amount) || amount <= 0 || !type) {
+                        Swal.showValidationMessage("Please fill all fields correctly.");
+                        return false;
+                    }
+
+                    transactions.push([date, category, amount, type]);
+                    return true;
+                },
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire("✓ Transaction added successfully!", "", "success");
+                    viewTransactions();
+                }
+            });
+        }
+
+        // Function to display financial summary
+        function viewSummary() {
+            const income = transactions
+                .filter((t) => t[3] === "income")
+                .reduce((sum, t) => sum + t[2], 0);
+
+            const expenses = transactions
+                .filter((t) => t[3] === "expense")
+                .reduce((sum, t) => sum + t[2], 0);
+
+            const netSavings = income - expenses;
+
+            document.getElementById("resultDisplay").innerHTML = `
+                <strong>Income:</strong> $${income.toFixed(2)}<br>
+                <strong>Expenses:</strong> $${expenses.toFixed(2)}<br>
+                <strong>Net Savings:</strong> $${netSavings.toFixed(2)}
+            `;
+        }
+
+        // Function to display spending by category
+        function viewSpendingByCategory() {
+            const categories = {};
+            transactions
+                .filter((t) => t[3] === "expense")
+                .forEach((t) => {
+                    if (categories[t[1]]) {
+                        categories[t[1]] += t[2];
+                    } else {
+                        categories[t[1]] = t[2];
+                    }
+                });
+
+            const resultDisplay = document.getElementById("resultDisplay");
+            if (Object.keys(categories).length === 0) {
+                resultDisplay.textContent = "No expenses found.";
+                return;
+            }
+
+            resultDisplay.innerHTML = Object.entries(categories)
+                .map(([category, total]) => `<div>${category}: $${total.toFixed(2)}</div>`)
+                .join("");
+        }
+
+        // Initialize syntax highlighting
+        hljs.highlightAll();
+    </script>
+</body>
+</html>
