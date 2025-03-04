@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Counter Operations</title>
+    <!-- Alpine.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.12.0/cdn.min.js" defer></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="bg-slate-50 p-4 min-h-screen">
+    <div class="max-w-6xl mx-auto" x-data="counterApp()">
+        <!-- Main container -->
+        <div class="grid grid-cols-1 lg:grid-cols-8 gap-6">
+
+            <!-- Main Column (4/8 width) -->
+            <div class="lg:col-span-4 space-y-6">
+                <!-- Interactive Panel -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200">
+                    <h1 class="text-3xl font-bold text-center mb-2 text-slate-800">Counter Operations</h1>
+                    <p class="text-center text-slate-600 mb-6">Interact with the Counter and see Python equivalents</p>
+
+                    <!-- Counter Display -->
+                    <div class="p-4 bg-slate-100 rounded-lg mb-6 min-h-[60px]">
+                        <div class="mb-2 text-sm font-medium text-slate-700">Current Counter:</div>
+                        <div class="flex flex-wrap gap-2 items-center">
+                            <template x-if="Object.keys(myCounter).length === 0">
+                                <span class="text-slate-500">Counter is empty.</span>
+                            </template>
+                            <template x-if="Object.keys(myCounter).length > 0">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <template x-for="(count, item) in myCounter" :key="item">
+                                        <div
+                                            class="px-3 py-2 rounded-lg bg-white border border-slate-200 flex items-center gap-2 hover:shadow-md transition-all duration-200">
+                                            <span class="font-medium text-slate-700"
+                                                x-text="`${item}: ${count}`"></span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Python Counter Display -->
+                    <div class="bg-gray-900 text-white p-4 rounded-lg mb-6 relative font-mono text-sm">
+                        <pre x-text="'from collections import Counter\nmy_counter = Counter({' + 
+                            Object.entries(myCounter).map(([k, v]) => `'${k}': ${v}`).join(', ') + 
+                            '})'"></pre>
+                        <button @click="copyToClipboard('from collections import Counter\nmy_counter = Counter({' + 
+                            Object.entries(myCounter).map(([k, v]) => `'${k}': ${v}`).join(', ') + '})')"
+                            class="absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-xs text-white px-2 py-1 rounded">
+                            Copy
+                        </button>
+                    </div>
+
+                    <!-- Input Section -->
+                    <div class="space-y-3 mb-6">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700">Item:</label>
+                                <input type="text" x-model="inputItem"
+                                    class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="Enter an item">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700">Count:</label>
+                                <input type="number" x-model.number="inputCount"
+                                    class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="Enter count (default 1)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buttons for Counter Operations -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <button @click="updateCounter('add')"
+                            class="p-2 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-800 border border-blue-200 flex items-center justify-center">
+                            <i class="fas fa-plus mr-2"></i>Add/Update
+                        </button>
+                        <button @click="updateCounter('subtract')"
+                            class="p-2 rounded-lg bg-red-100 hover:bg-red-200 text-red-800 border border-red-200 flex items-center justify-center">
+                            <i class="fas fa-minus mr-2"></i>Subtract
+                        </button>
+                        <button @click="removeItem()"
+                            class="p-2 rounded-lg bg-purple-100 hover:bg-purple-200 text-purple-800 border border-purple-200 flex items-center justify-center">
+                            <i class="fas fa-trash mr-2"></i>Remove Item
+                        </button>
+                        <button @click="getCount()"
+                            class="p-2 rounded-lg bg-green-100 hover:bg-green-200 text-green-800 border border-green-200 flex items-center justify-center">
+                            <i class="fas fa-search mr-2"></i>Get Count
+                        </button>
+                        <button @click="mostCommon()"
+                            class="p-2 rounded-lg bg-yellow-100 hover:bg-yellow-200 text-yellow-800 border border-yellow-200 flex items-center justify-center">
+                            <i class="fas fa-trophy mr-2"></i>Most Common
+                        </button>
+                        <button @click="resetCounter()"
+                            class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 border border-gray-200 col-span-2 flex items-center justify-center">
+                            <i class="fas fa-undo mr-2"></i>Reset Counter
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Counter Concepts -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200">
+                    <h2 class="text-2xl font-bold mb-6 text-slate-800 flex items-center">
+                        <i class="fas fa-graduation-cap mr-3 text-purple-600"></i>Counter Concepts
+                    </h2>
+
+                    <div class="space-y-4">
+                        <!-- What is a Counter? -->
+                        <div x-data="{open: true}" class="border border-slate-200 rounded-lg overflow-hidden">
+                            <div @click="open = !open"
+                                class="p-4 bg-white cursor-pointer flex justify-between items-center">
+                                <div class="text-lg font-medium text-slate-700 flex items-center">
+                                    <i class="fas fa-info-circle mr-2 text-blue-500"></i>What is a Counter?
+                                </div>
+                                <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                            </div>
+                            <div x-show="open" x-transition class="p-4 bg-slate-50 border-t border-slate-200">
+                                <p class="text-sm text-slate-600 mb-3">
+                                    A Counter is a dict subclass in Python's collections module that helps count
+                                    hashable objects.
+                                    It provides an easy way to count items and perform various counting-related
+                                    operations.
+                                </p>
+                                <div class="bg-gray-900 text-white p-4 rounded-lg relative font-mono text-sm">
+                                    <pre>from collections import Counter
+
+# Creating a Counter
+fruits = Counter(['apple', 'banana', 'apple', 'cherry'])
+# Counter({'apple': 2, 'banana': 1, 'cherry': 1})
+
+# From dictionary
+word_counts = Counter({'hello': 3, 'world': 2})
+
+# From string
+char_counts = Counter('hello world')
+# Counter({'l': 3, 'o': 2, 'h': 1, 'e': 1, ' ': 1, 'w': 1, 'r': 1, 'd': 1})</pre>
+                                    <button
+                                        @click="copyToClipboard('from collections import Counter\n\n# Creating a Counter\nfruits = Counter([\'apple\', \'banana\', \'apple\', \'cherry\'])\n# Counter({\'apple\': 2, \'banana\': 1, \'cherry\': 1})\n\n# From dictionary\nword_counts = Counter({\'hello\': 3, \'world\': 2})\n\n# From string\nchar_counts = Counter(\'hello world\')\n# Counter({\'l\': 3, \'o\': 2, \'h\': 1, \'e\': 1, \' \': 1, \'w\': 1, \'r\': 1, \'d\': 1})')"
+                                        class="absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-xs text-white px-2 py-1 rounded">
+                                        Copy
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Key Methods -->
+                        <div x-data="{open: false}" class="border border-slate-200 rounded-lg overflow-hidden">
+                            <div @click="open = !open"
+                                class="p-4 bg-white cursor-pointer flex justify-between items-center">
+                                <div class="text-lg font-medium text-slate-700 flex items-center">
+                                    <i class="fas fa-code mr-2 text-green-500"></i>Key Methods
+                                </div>
+                                <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                            </div>
+                            <div x-show="open" x-transition class="p-4 bg-slate-50 border-t border-slate-200">
+                                <div class="bg-gray-900 text-white p-4 rounded-lg relative font-mono text-sm">
+                                    <pre>from collections import Counter
+
+# Creating Counter
+c = Counter('abracadabra')
+
+# Most common elements
+print(c.most_common(3))
+# [('a', 5), ('b', 2), ('r', 2)]
+
+# Arithmetic operations
+d = Counter('banana')
+print(c + d)  # Add counts
+print(c - d)  # Subtract counts
+print(c & d)  # Intersection (minimum of counts)
+print(c | d)  # Union (maximum of counts)
+
+# Total count
+total = sum(c.values())
+
+# Element access with zero default
+print(c['x'])  # Returns 0 if not found
+
+# Update counter
+c.update(['x', 'x'])  # Adds to existing counts
+c.subtract(['a', 'a'])  # Subtracts from counts</pre>
+                                    <button
+                                        @click="copyToClipboard('from collections import Counter\n\n# Creating Counter\nc = Counter(\'abracadabra\')\n\n# Most common elements\nprint(c.most_common(3))\n# [(\'a\', 5), (\'b\', 2), (\'r\', 2)]\n\n# Arithmetic operations\nd = Counter(\'banana\')\nprint(c + d)  # Add counts\nprint(c - d)  # Subtract counts\nprint(c & d)  # Intersection (minimum of counts)\nprint(c | d)  # Union (maximum of counts)\n\n# Total count\ntotal = sum(c.values())\n\n# Element access with zero default\nprint(c[\'x\'])  # Returns 0 if not found\n\n# Update counter\nc.update([\'x\', \'x\'])  # Adds to existing counts\nc.subtract([\'a\', \'a\'])  # Subtracts from counts')"
+                                        class="absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-xs text-white px-2 py-1 rounded">
+                                        Copy
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Practical Use Cases -->
+                        <div x-data="{open: false}" class="border border-slate-200 rounded-lg overflow-hidden">
+                            <div @click="open = !open"
+                                class="p-4 bg-white cursor-pointer flex justify-between items-center">
+                                <div class="text-lg font-medium text-slate-700 flex items-center">
+                                    <i class="fas fa-cogs mr-2 text-yellow-500"></i>Practical Use Cases
+                                </div>
+                                <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                            </div>
+                            <div x-show="open" x-transition class="p-4 bg-slate-50 border-t border-slate-200">
+                                <div class="bg-gray-900 text-white p-4 rounded-lg relative font-mono text-sm">
+                                    <pre># Word frequency in a text
+def word_frequency(text):
+    return Counter(text.lower().split())
+
+# Text: "the quick brown fox jumps over the lazy dog"
+text = "the quick brown fox jumps over the lazy dog"
+freq = word_frequency(text)
+print(freq.most_common(3))
+# [('the', 2), ('quick', 1), ('brown', 1)]
+
+# Finding unique elements
+numbers = [1, 2, 2, 3, 3, 3, 4, 4, 4, 4]
+unique_counts = Counter(numbers)
+unique_elements = [num for num, count in unique_counts.items() if count == 1]
+print(unique_elements)  # [1]
+
+# Inventory tracking
+inventory = Counter({
+    'apple': 50,
+    'banana': 30,
+    'cherry': 20
+})
+inventory.subtract({'apple': 10})  # Sell 10 apples
+print(inventory)  # Counter({'apple': 40, 'banana': 30, 'cherry': 20})</pre>
+                                    <button
+                                        @click="copyToClipboard('# Word frequency in a text\ndef word_frequency(text):\n    return Counter(text.lower().split())\n\n# Text: "
+                                        the quick brown fox jumps over the lazy
+                                        dog"\ntext="the quick brown fox jumps over the lazy dog"
+                                        \nfreq=word_frequency(text)\nprint(freq.most_common(3))\n# [(\'the\', 2),
+                                        (\'quick\', 1), (\'brown\', 1)]\n\n# Finding unique elements\nnumbers=[1, 2, 2,
+                                        3, 3, 3, 4, 4, 4, 4]\nunique_counts=Counter(numbers)\nunique_elements=[num for
+                                        num, count in unique_counts.items() if count==1]\nprint(unique_elements) #
+                                        [1]\n\n# Inventory tracking\ninventory=Counter({\n \'apple\': 50,\n \'banana\':
+                                        30,\n \'cherry\': 20\n})\ninventory.subtract({\'apple\': 10}) # Sell 10
+                                        apples\nprint(inventory) # Counter({\'apple\': 40, \'banana\': 30, \'cherry\':
+                                        20})')"
+                                        class="absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-xs text-white px-2 py-1 rounded">
+                                        Copy
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Performance Considerations -->
+                        <div x-data="{open: false}" class="border border-slate-200 rounded-lg overflow-hidden">
+                            <div @click="open = !open"
+                                class="p-4 bg-white cursor-pointer flex justify-between items-center">
+                                <div class="text-lg font-medium text-slate-700 flex items-center">
+                                    <i class="fas fa-tachometer-alt mr-2 text-purple-500"></i>Performance Considerations
+                                </div>
+                                <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                            </div>
+                            <div x-show="open" x-transition class="p-4 bg-slate-50 border-t border-slate-200">
+                                <div class="bg-gray-900 text-white p-4 rounded-lg relative font-mono text-sm">
+                                    <pre># Time complexities of common operations:
+# - Element access: O(1)
+# - Update/Subtract: O(n) where n is the number of items being added
+# - Most common: O(n log n) for sorting
+# - Arithmetic operations: O(n + m) where n and m are sizes of counters
+
+# When to use Counter:
+# - Counting frequency of elements in a collection
+# - Finding most common elements
+# - Comparing frequency distributions
+# - Implementing bag/multiset data structures</pre>
+                                    <button
+                                        @click="copyToClipboard('# Time complexities of common operations:\n# - Element access: O(1)\n# - Update/Subtract: O(n) where n is the number of items being added\n# - Most common: O(n log n) for sorting\n# - Arithmetic operations: O(n + m) where n and m are sizes of counters\n\n# When to use Counter:\n# - Counting frequency of elements in a collection\n# - Finding most common elements\n# - Comparing frequency distributions\n# - Implementing bag/multiset data structures')"
+                                        class="absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-xs text-white px-2 py-1 rounded">
+                                        Copy
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Side Column (4/8 width) - Quick Reference -->
+            <div class="lg:col-span-4">
+                <div class="bg-white p-6 rounded-xl border border-slate-200 lg:sticky lg:top-4">
+                    <h2 class="text-2xl font-bold mb-6 text-slate-800 flex items-center">
+                        <i class="fas fa-lightbulb mr-3 text-yellow-500"></i>Counter Quick Reference
+                    </h2>
+
+                    <div class="space-y-4">
+                        <!-- Import & Creation -->
+                        <div class="p-4 bg-slate-100 rounded-lg border border-slate-200">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-file-import text-purple-500 mr-2"></i>
+                                <span class="font-semibold text-slate-700">Import & Creation</span>
+                            </div>
+                            <div class="bg-gray-900 text-white p-4 rounded-lg relative font-mono text-sm">
+                                <pre>from collections import Counter
+
+# Different ways to create a Counter
+empty = Counter()
+from_list = Counter(['a', 'b', 'a', 'c'])
+from_dict = Counter({'a': 2, 'b': 1})
+from_string = Counter('abracadabra')</pre>
+                                <button
+                                    @click="copyToClipboard('from collections import Counter\n\n# Different ways to create a Counter\nempty = Counter()\nfrom_list = Counter([\'a\', \'b\', \'a\', \'c\'])\nfrom_dict = Counter({\'a\': 2, \'b\': 1})\nfrom_string = Counter(\'abracadabra\')')"
+                                    class="absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-xs text-white px-2 py-1 rounded">
+                                    Copy
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Basic Operations -->
+                        <div class="p-4 bg-slate-100 rounded-lg border border-slate-200">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-tools text-blue-500 mr-2"></i>
+                                <span class="font-semibold text-slate-700">Basic Operations</span>
+                            </div>
+                            <div class="bg-gray-900 text-white p-4 rounded-lg relative font-mono text-sm">
+                                <pre># Accessing counts
+c['a']  # Returns count for 'a'
+
+# Updating counts
+c.update(['a', 'b'])  # Increment counts
+c.subtract(['a', 'a'])  # Decrement counts
+
+# Getting elements
+list(c.elements())  # Get all elements with counts
+
+# Total count
+sum(c.values())</pre>
+                                <button
+                                    @click="copyToClipboard('# Accessing counts\nc[\'a\']  # Returns count for \'a\'\n\n# Updating counts\nc.update([\'a\', \'b\'])  # Increment counts\nc.subtract([\'a\', \'a\'])  # Decrement counts\n\n# Getting elements\nlist(c.elements())  # Get all elements with counts\n\n# Total count\nsum(c.values())')"
+                                    class="absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-xs text-white px-2 py-1 rounded">
+                                    Copy
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Advanced Operations -->
+                        <div class="p-4 bg-slate-100 rounded-lg border border-slate-200">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-cogs text-green-500 mr-2"></i>
+                                <span class="font-semibold text-slate-700">Advanced Operations</span>
+                            </div>
+                            <div class="bg-gray-900 text-white p-4 rounded-lg relative font-mono text-sm">
+                                <pre># Most common elements
+c.most_common(3)  # Top 3 most common
+
+# Arithmetic operations
+c + d  # Add counts
+c - d  # Subtract counts
+c & d  # Intersection (min counts)
+c | d  # Union (max counts)
+
+# Remove zero/negative counts
+c += Counter()</pre>
+                                <button
+                                    @click="copyToClipboard('# Most common elements\nc.most_common(3)  # Top 3 most common\n\n# Arithmetic operations\nc + d  # Add counts\nc - d  # Subtract counts\nc & d  # Intersection (min counts)\nc | d  # Union (max counts)\n\n# Remove zero/negative counts\nc += Counter()')"
+                                    class="absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-xs text-white px-2 py-1 rounded">
+                                    Copy
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Common Patterns -->
+                        <div class="p-4 bg-slate-100 rounded-lg border border-slate-200">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-code-branch text-red-500 mr-2"></i>
+                                <span class="font-semibold text-slate-700">Common Patterns</span>
+                            </div>
+                            <div class="bg-gray-900 text-white p-4 rounded-lg relative font-mono text-sm">
+                                <pre># Word frequency analysis
+text = "hello world hello"
+word_counts = Counter(text.split())
+
+# Finding duplicates
+numbers = [1, 2, 2, 3, 3, 3]
+duplicates = [num for num, count in Counter(numbers).items() if count > 1]
+
+# Inventory management
+inventory = Counter({'apple': 10, 'banana': 5})
+inventory.subtract({'apple': 3})  # Sell 3 apples</pre>
+                                <button @click="copyToClipboard('# Word frequency analysis\ntext = " hello world
+                                    hello"\nword_counts=Counter(text.split())\n\n# Finding duplicates\nnumbers=[1, 2, 2,
+                                    3, 3, 3]\nduplicates=[num for num, count in Counter(numbers).items() if count>
+                                    1]\n\n# Inventory management\ninventory = Counter({\'apple\': 10, \'banana\':
+                                    5})\ninventory.subtract({\'apple\': 3}) # Sell 3 apples')"
+                                    class="absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-xs text-white px-2
+                                    py-1 rounded">
+                                    Copy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div x-show="toast.visible" x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 transform translate-y-2"
+            x-transition:enter-end="opacity-100 transform translate-y-0"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 transform translate-y-0"
+            x-transition:leave-end="opacity-0 transform translate-y-2" @click="toast.visible = false"
+            class="fixed bottom-4 right-4 py-2 px-4 rounded-lg shadow-lg text-white cursor-pointer" :class="{
+           'bg-green-500': toast.type === 'success',
+           'bg-red-500': toast.type === 'error',
+           'bg-blue-500': toast.type === 'info'
+         }">
+            <span x-text="toast.message"></span>
+        </div>
+    </div>
+
+    <script>
+        function counterApp() {
+            return {
+                myCounter: {},
+                inputItem: '',
+                inputCount: 1,
+                toast: {
+                    visible: false,
+                    message: '',
+                    type: 'info',
+                    timeout: null
+                },
+
+                showToast(message, type = 'info') {
+                    this.toast.message = message;
+                    this.toast.type = type;
+                    this.toast.visible = true;
+
+                    // Clear any existing timeout
+                    if (this.toast.timeout) {
+                        clearTimeout(this.toast.timeout);
+                    }
+
+                    // Set timeout to hide toast
+                    this.toast.timeout = setTimeout(() => {
+                        this.toast.visible = false;
+                    }, 3000);
+                },
+
+                updateCounter(operation) {
+                    if (!this.inputItem) {
+                        this.showToast('Please enter an item.', 'error');
+                        return;
+                    }
+
+                    if (operation === 'add') {
+                        if (!this.myCounter[this.inputItem]) {
+                            this.myCounter[this.inputItem] = 0;
+                        }
+                        this.myCounter[this.inputItem] += this.inputCount || 1;
+                        this.showToast(`Added ${this.inputCount || 1} to ${this.inputItem}`, 'success');
+                    } else if (operation === 'subtract') {
+                        if (this.myCounter[this.inputItem]) {
+                            this.myCounter[this.inputItem] -= this.inputCount || 1;
+                            if (this.myCounter[this.inputItem] <= 0) {
+                                delete this.myCounter[this.inputItem];
+                            }
+                            this.showToast(`Subtracted ${this.inputCount || 1} from ${this.inputItem}`, 'success');
+                        } else {
+                            this.showToast('Item not found in counter.', 'error');
+                        }
+                    }
+
+                    this.inputItem = '';
+                    this.inputCount = 1;
+                },
+
+                removeItem() {
+                    if (!this.inputItem) {
+                        this.showToast('Please enter an item.', 'error');
+                        return;
+                    }
+
+                    if (this.myCounter[this.inputItem]) {
+                        delete this.myCounter[this.inputItem];
+                        this.showToast(`Removed ${this.inputItem} from counter`, 'success');
+                    } else {
+                        this.showToast('Item not found in counter.', 'error');
+                    }
+
+                    this.inputItem = '';
+                },
+
+                getCount() {
+                    if (!this.inputItem) {
+                        this.showToast('Please enter an item.', 'error');
+                        return;
+                    }
+
+                    const count = this.myCounter[this.inputItem] || 0;
+                    this.showToast(`Count of ${this.inputItem}: ${count}`, 'info');
+                },
+
+                mostCommon() {
+                    const sorted = Object.entries(this.myCounter)
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 3);
+
+                    if (sorted.length === 0) {
+                        this.showToast('Counter is empty.', 'error');
+                        return;
+                    }
+
+                    const message = sorted.map(([item, count]) => `${item}: ${count}`).join(', ');
+                    this.showToast(`Most common: ${message}`, 'info');
+                },
+
+                resetCounter() {
+                    this.myCounter = {};
+                    this.showToast('Counter reset successfully!', 'success');
+                },
+
+                copyToClipboard(text) {
+                    const button = event.target;
+
+                    // Disable button during copy to prevent multiple clicks
+                    button.disabled = true;
+
+                    // Store original button state
+                    const originalText = button.innerText;
+                    const originalClasses = Array.from(button.classList);
+
+                    // Update button appearance
+                    button.innerText = 'Copied!';
+                    button.classList.remove('bg-gray-700');
+                    button.classList.remove('hover:bg-gray-600');
+                    button.classList.add('bg-green-500');
+
+                    // Attempt to copy text
+                    navigator.clipboard.writeText(text)
+                        .then(() => {
+                            this.showToast('Code copied to clipboard!', 'success');
+                        })
+                        .catch((error) => {
+                            console.error('Clipboard copy failed:', error);
+                            this.showToast('Failed to copy code to clipboard.', 'error');
+                        })
+                        .finally(() => {
+                            // Restore button state after 2 seconds
+                            setTimeout(() => {
+                                button.innerText = originalText;
+                                button.classList.remove(...button.classList);
+                                originalClasses.forEach(cls => button.classList.add(cls));
+                                button.disabled = false;
+                            }, 2000);
+                        });
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

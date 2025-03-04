@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tuple Operations</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/themes/tomorrow-night.min.css">
+    <!-- External Resources -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.23/dist/full.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+
+    <style>
+        .code-snippet {
+            background-color: #1e1e1e;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 16px 0;
+            font-family: monospace;
+            position: relative;
+        }
+
+        .code-snippet pre {
+            margin: 0;
+            color: #d4d4d4;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+
+        .code-snippet .language-label {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            color: #808080;
+            font-size: 12px;
+        }
+
+        .code-snippet .copy-button {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background: #404040;
+            border: none;
+            border-radius: 4px;
+            color: #d4d4d4;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .code-snippet .copy-button:hover {
+            background: #505050;
+        }
+
+        /* Some basic syntax highlighting */
+        .keyword {
+            color: #569cd6;
+        }
+
+        .string {
+            color: #ce9178;
+        }
+
+        .comment {
+            color: #6a9955;
+        }
+
+        .function {
+            color: #dcdcaa;
+        }
+    </style>
+</head>
+
+<body class="p-6 bg-slate-50 flex items-center justify-center min-h-screen">
+    <div class="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Left Column -->
+        <div class="space-y-8">
+            <!-- Interactive Panel -->
+            <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                <h1 class="text-3xl font-bold text-center mb-6 ">
+                    🧮 Tuple Operations Explorer
+                </h1>
+
+                <!-- Tuple Visualization -->
+                <div class="p-4 bg-slate-50 rounded-lg mb-6 border-2 border-dashed border-blue-100">
+                    <div class="mb-2 text-sm font-semibold text-slate-500 flex items-center">
+                        <i class="fas fa-code-branch mr-2"></i>Current Tuple State
+                    </div>
+                    <div id="tupleDisplay" class="flex flex-wrap gap-2 items-center min-h-10">
+                        <span class="text-slate-400">Empty tuple</span>
+                    </div>
+                </div>
+
+                <!-- Operations Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+                    <button onclick="displayTuple()"
+                        class="btn bg-blue-100 hover:bg-blue-200 text-blue-800 border-blue-200"
+                        aria-label="Display current tuple contents">
+                        <i class="fas fa-eye mr-2" aria-hidden="true"></i>Display Tuple
+                    </button>
+                    <button onclick="createTuple()"
+                        class="btn bg-green-100 hover:bg-green-200 text-green-800 border-green-200">
+                        <i class="fas fa-plus mr-2"></i>Create New Tuple
+                    </button>
+                    <button onclick="accessElement()"
+                        class="btn bg-purple-100 hover:bg-purple-200 text-purple-800 border-purple-200">
+                        <i class="fas fa-search mr-2"></i>Access Element
+                    </button>
+                    <button onclick="sliceTuple()"
+                        class="btn bg-yellow-100 hover:bg-yellow-200 text-yellow-800 border-yellow-200">
+                        <i class="fas fa-cut mr-2"></i>Slice Tuple
+                    </button>
+                    <button onclick="checkElement()"
+                        class="btn bg-pink-100 hover:bg-pink-200 text-pink-800 border-pink-200">
+                        <i class="fas fa-check mr-2"></i>Check Element
+                    </button>
+                    <button onclick="concatenateTuple()"
+                        class="btn bg-indigo-100 hover:bg-indigo-200 text-indigo-800 border-indigo-200">
+                        <i class="fas fa-link mr-2"></i>Concatenate Tuple
+                    </button>
+                    <button onclick="countElement()"
+                        class="btn bg-red-100 hover:bg-red-200 text-red-800 border-red-200">
+                        <i class="fas fa-calculator mr-2"></i>Count Element
+                    </button>
+                    <button onclick="getLength()"
+                        class="btn bg-teal-100 hover:bg-teal-200 text-teal-800 border-teal-200">
+                        <i class="fas fa-ruler mr-2"></i>Get Length
+                    </button>
+                </div>
+
+                <!-- Operation Results -->
+                <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <div class="mb-2 text-sm font-semibold text-blue-600 flex items-center">
+                        <i class="fas fa-terminal mr-2"></i>Operation Output
+                    </div>
+                    <div id="resultDisplay" class="text-sm font-mono text-blue-800">
+                        Ready for tuple operations...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Educational Content -->
+            <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                <h2 class="text-2xl font-bold mb-6 text-slate-800 flex items-center">
+                    <i class="fas fa-graduation-cap mr-3 text-purple-600"></i>Tuple Concepts
+                </h2>
+
+                <div class="space-y-4">
+                    <!-- Immutability -->
+                    <div class="collapse collapse-plus bg-base-100 border border-slate-200">
+                        <input type="checkbox" />
+                        <div class="collapse-title text-lg font-medium text-slate-700">
+                            <i class="fas fa-lock mr-2 text-red-500"></i>Immutability
+                        </div>
+                        <div class="collapse-content">
+                            <p class="text-sm text-slate-600 mb-3">
+                                Tuples are immutable sequences in Python. Once created, their elements cannot be
+                                modified.
+                            </p>
+                            <div class="code-snippet">
+                                <pre><code class="language-python"><span class="keyword">coordinates</span> = (<span class="number">40.7128</span>, <span class="number">-74.0060</span>)
+<span class="keyword">coordinates</span>[<span class="number">0</span>] = <span class="number">35.6895</span>  <span class="comment"># Raises TypeError</span></code></pre>
+                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <p class="text-sm text-slate-600 mt-3">
+                                <strong>Key Benefit:</strong> Ensures data integrity and allows use as dictionary keys.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Packing & Unpacking -->
+                    <div class="collapse collapse-plus bg-base-100 border border-slate-200">
+                        <input type="checkbox" />
+                        <div class="collapse-title text-lg font-medium text-slate-700">
+                            <i class="fas fa-box-open mr-2 text-blue-500"></i>Packing & Unpacking
+                        </div>
+                        <div class="collapse-content">
+                            <div class="code-snippet">
+                                <pre><code class="language-python"><span class="comment"># Packing</span>
+<span class="keyword">user</span> = <span class="string">'John'</span>, <span class="number">32</span>, <span class="string">'Developer'</span>
+
+<span class="comment"># Unpacking</span>
+<span class="keyword">name</span>, <span class="keyword">age</span>, <span class="keyword">job</span> = <span class="keyword">user</span></code></pre>
+                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <p class="text-sm text-slate-600 mt-3">
+                                Commonly used for multiple return values and function arguments.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Tuple Methods -->
+                    <div class="collapse collapse-plus bg-base-100 border border-slate-200">
+                        <input type="checkbox" />
+                        <div class="collapse-title text-lg font-medium text-slate-700">
+                            <i class="fas fa-wrench mr-2 text-green-500"></i>Tuple Methods
+                        </div>
+                        <div class="collapse-content">
+                            <div class="code-snippet">
+                                <pre><code class="language-python"><span class="keyword">nums</span> = (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">4</span>)
+<span class="keyword">count</span> = <span class="keyword">nums</span>.count(<span class="number">2</span>)  <span class="comment"># Returns 2</span>
+<span class="keyword">index</span> = <span class="keyword">nums</span>.index(<span class="number">3</span>)  <span class="comment"># Returns 2</span></code></pre>
+                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <p class="text-sm text-slate-600 mt-3">
+                                Only two methods available due to immutability.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Nested Tuples -->
+                    <div class="collapse collapse-plus bg-base-100 border border-slate-200">
+                        <input type="checkbox" />
+                        <div class="collapse-title text-lg font-medium text-slate-700">
+                            <i class="fas fa-sitemap mr-2 text-yellow-500"></i>Nested Tuples
+                        </div>
+                        <div class="collapse-content">
+                            <div class="code-snippet">
+                                <pre><code class="language-python"><span class="keyword">matrix</span> = (
+    (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>),
+    (<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>),
+    (<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>)
+)
+<span class="keyword">print</span>(<span class="keyword">matrix</span>[<span class="number">1</span>][<span class="number">2</span>])  <span class="comment"># Output: 6</span></code></pre>
+                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <p class="text-sm text-slate-600 mt-3">
+                                Useful for representing multi-dimensional data structures.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Tuple vs List -->
+                    <div class="collapse collapse-plus bg-base-100 border border-slate-200">
+                        <input type="checkbox" />
+                        <div class="collapse-title text-lg font-medium text-slate-700">
+                            <i class="fas fa-balance-scale mr-2 text-indigo-500"></i>Tuple vs List
+                        </div>
+                        <div class="collapse-content">
+                            <div class="code-snippet">
+                                <pre><code class="language-python"><span class="comment"># Immutable tuple</span>
+<span class="keyword">t</span> = (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)
+
+<span class="comment"># Mutable list</span>
+<span class="keyword">l</span> = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</code></pre>
+                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <ul class="text-sm text-slate-600 mt-3 list-disc pl-5">
+                                <li><strong>Speed:</strong> Tuples are faster for fixed data</li>
+                                <li><strong>Memory:</strong> Tuples consume less memory</li>
+                                <li><strong>Use Case:</strong> Tuples for constants, lists for dynamic data</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Dictionary Keys -->
+                    <div class="collapse collapse-plus bg-base-100 border border-slate-200">
+                        <input type="checkbox" />
+                        <div class="collapse-title text-lg font-medium text-slate-700">
+                            <i class="fas fa-key mr-2 text-pink-500"></i>Dictionary Keys
+                        </div>
+                        <div class="collapse-content">
+                            <div class="code-snippet">
+                                <pre><code class="language-python"><span class="keyword">locations</span> = {
+    (<span class="number">35.6895</span>, <span class="number">139.6917</span>): <span class="string">'Tokyo'</span>,
+    (<span class="number">48.8566</span>, <span class="number">2.3522</span>): <span class="string">'Paris'</span>
+}
+<span class="keyword">print</span>(<span class="keyword">locations</span>[(<span class="number">35.6895</span>, <span class="number">139.6917</span>)])  <span class="comment"># Tokyo</span></code></pre>
+                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <p class="text-sm text-slate-600 mt-3">
+                                Only immutable types can be dictionary keys in Python.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="space-y-8">
+            <!-- Quick Reference -->
+            <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                <h2 class="text-2xl font-bold mb-6 text-slate-800 flex items-center">
+                    <i class="fas fa-lightbulb mr-3 text-yellow-500"></i>Tuple Quick Reference
+                </h2>
+
+                <div class="space-y-4">
+                    <!-- Creation -->
+                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-magic text-purple-500 mr-2"></i>
+                            <span class="font-semibold text-slate-700">Creation</span>
+                        </div>
+                        <div class="code-snippet">
+                            <pre><code class="language-python"><span class="keyword">empty</span> = ()
+<span class="keyword">single</span> = (<span class="number">42</span>,)
+<span class="keyword">multiple</span> = (<span class="number">1</span>, <span class="number">2</span>, <span class="string">'three'</span>)</code></pre>
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        </div>
+                    </div>
+
+                    <!-- Access & Slicing -->
+                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-search text-blue-500 mr-2"></i>
+                            <span class="font-semibold text-slate-700">Access & Slicing</span>
+                        </div>
+                        <div class="code-snippet">
+                            <pre><code class="language-python"><span class="keyword">tup</span>[<span class="number">0</span>]     <span class="comment"># First element</span>
+<span class="keyword">tup</span>[-<span class="number">1</span>]    <span class="comment"># Last element</span>
+<span class="keyword">tup</span>[<span class="number">1</span>:<span class="number">4</span>]   <span class="comment"># Elements 1-3</span>
+<span class="keyword">tup</span>[::<span class="number">2</span>]   <span class="comment"># Every 2nd element</span></code></pre>
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        </div>
+                    </div>
+
+                    <!-- Operations -->
+                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-cogs text-green-500 mr-2"></i>
+                            <span class="font-semibold text-slate-700">Core Operations</span>
+                        </div>
+                        <div class="code-snippet">
+                            <pre><code class="language-python"><span class="keyword">len</span>(<span class="keyword">tup</span>)          <span class="comment"># Length</span>
+<span class="keyword">tup1</span> + <span class="keyword">tup2</span>       <span class="comment"># Concatenate</span>
+<span class="keyword">tup</span> * <span class="number">3</span>           <span class="comment"># Repeat</span>
+<span class="keyword">elem</span> <span class="keyword">in</span> <span class="keyword">tup</span>       <span class="comment"># Membership check</span>
+<span class="keyword">max</span>(<span class="keyword">tup</span>)/<span class="keyword">min</span>(<span class="keyword">tup</span>) <span class="comment"># Max/Min values</span></code></pre>
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        </div>
+                    </div>
+
+                    <!-- Methods -->
+                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-tools text-red-500 mr-2"></i>
+                            <span class="font-semibold text-slate-700">Methods</span>
+                        </div>
+                        <div class="code-snippet">
+                            <pre><code class="language-python"><span class="keyword">index</span> = <span class="keyword">tup</span>.index(<span class="keyword">element</span>)
+<span class="keyword">count</span> = <span class="keyword">tup</span>.count(<span class="keyword">element</span>)</code></pre>
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        </div>
+                    </div>
+
+                    <!-- Unpacking -->
+                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-box-open text-teal-500 mr-2"></i>
+                            <span class="font-semibold text-slate-700">Unpacking Patterns</span>
+                        </div>
+                        <div class="code-snippet">
+                            <pre><code class="language-python"><span class="keyword">x</span>, <span class="keyword">y</span>, <span class="keyword">z</span> = (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)
+<span class="keyword">a</span>, *<span class="keyword">rest</span> = (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>)
+*<span class="keyword">head</span>, <span class="keyword">last</span> = (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>)</code></pre>
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        </div>
+                    </div>
+
+                    <!-- Conversion -->
+                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-exchange-alt text-pink-500 mr-2"></i>
+                            <span class="font-semibold text-slate-700">Type Conversion</span>
+                        </div>
+                        <div class="code-snippet">
+                            <pre><code class="language-python"><span class="keyword">list_from_tuple</span> = <span class="keyword">list</span>(<span class="keyword">tup</span>)
+<span class="keyword">tuple_from_list</span> = <span class="keyword">tuple</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])</code></pre>
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        </div>
+                    </div>
+
+                    <!-- Best Practices -->
+                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-check-double text-orange-500 mr-2"></i>
+                            <span class="font-semibold text-slate-700">Best Practices</span>
+                        </div>
+                        <ul class="text-sm text-slate-600 space-y-2 list-disc pl-5">
+                            <li>Use for heterogeneous data collections</li>
+                            <li>Immutable data storage</li>
+                            <li>Return multiple values from functions</li>
+                            <li>Dictionary keys (unlike lists)</li>
+                            <li>Named tuples for readable structures</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let myTuple = [];
+
+        function updateDisplay(message = "") {
+            document.getElementById("tupleDisplay").textContent = `(${myTuple.join(", ")})`;
+            document.getElementById("resultDisplay").textContent = message;
+        }
+
+        async function createTuple() {
+            const { value: input } = await Swal.fire({
+                title: 'Create New Tuple',
+                input: 'text',
+                inputLabel: 'Enter elements (separated by spaces)',
+                showCancelButton: true,
+                customClass: {
+                    popup: 'rounded-xl border border-slate-200',
+                    input: 'border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500',
+                    actions: 'gap-3',
+                    confirmButton: 'btn bg-green-100 hover:bg-green-200 text-green-800 border-green-200',
+                    cancelButton: 'btn bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-200'
+                },
+                buttonsStyling: false,
+                inputValidator: (value) => {
+                    if (!value || !value.trim()) {
+                        return 'Input cannot be empty';
+                    }
+                }
+            });
+
+            if (input) {
+                myTuple = input.trim().split(/\s+/);
+                updateDisplay(`Created new tuple: (${myTuple.join(", ")})`, 'success');
+            }
+        }
+
+        function accessElement() {
+            if (!myTuple.length) return updateDisplay("Tuple is empty. Please create a tuple first.");
+
+            const index = Number(prompt("Enter index:"));
+            if (!isNaN(index) && Number.isInteger(index) && index >= 0 && index < myTuple.length) {
+                updateDisplay(`Element at index ${index}: ${myTuple[index]}`);
+            } else {
+                updateDisplay("Invalid index. Please enter a valid integer within the tuple's range.");
+            }
+        }
+
+        function sliceTuple() {
+            if (!myTuple.length) return updateDisplay("Tuple is empty. Please create a tuple first.");
+
+            const start = Number(prompt("Enter start index:"));
+            if (start === null) return;
+
+            const end = Number(prompt("Enter end index:"));
+            if (end === null) return;
+
+            if (!isNaN(start) && !isNaN(end) && Number.isInteger(start) && Number.isInteger(end)) {
+                if (start > end) {
+                    return updateDisplay("Start index cannot be greater than end index");
+                }
+                const sliced = myTuple.slice(start, end);
+                updateDisplay(`Slice from ${start} to ${end}: (${sliced.join(", ")})`);
+            } else {
+                updateDisplay("Invalid indices. Please enter valid integers.");
+            }
+        }
+
+        function checkElement() {
+            if (!myTuple.length) return updateDisplay("Tuple is empty.");
+
+            const element = prompt("Enter element to check:");
+            if (element !== null) {
+                updateDisplay(myTuple.includes(element) ? `${element} exists in the tuple.` : `${element} does not exist in the tuple.`);
+            }
+        }
+
+        function concatenateTuple() {
+            const input = prompt("Enter elements to concatenate (separated by spaces):");
+            if (input) {
+                myTuple = myTuple.concat(input.trim().split(/\s+/));
+                updateDisplay(`Concatenated tuple: (${myTuple.join(", ")})`);
+            }
+        }
+
+        function countElement() {
+            if (!myTuple.length) return updateDisplay("Tuple is empty.");
+
+            const element = prompt("Enter element to count:");
+            if (element !== null) {
+                const count = myTuple.filter(x => x === element).length;
+                updateDisplay(`'${element}' occurs ${count} time(s) in the tuple.`);
+            }
+        }
+
+        function getLength() {
+            updateDisplay(`Tuple length: ${myTuple.length}`);
+        }
+
+        function sanitizeInput(str) {
+            return str.replace(/[&<>"']/g, char => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            })[char]);
+        }
+        const debounce = (func, wait) => {
+            let timeout;
+            return (...args) => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        };
+
+        const debouncedUpdateDisplay = debounce(updateDisplay, 100);
+        // Use in display functions
+        tupleDisplay.innerHTML = myTuple.map((el, i) =>
+            i >= start && i < end ?
+                `<span class="bg-yellow-200">${sanitizeInput(el)}</span>` :
+                sanitizeInput(el)
+        ).join(", ");
+        // Initialize display
+        updateDisplay();
+
+        function copyCode(button) {
+            const snippet = button.parentElement;
+            const code = snippet.querySelector('pre').textContent;
+
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            });
+        }
+    </script>
+
+</body>
+
+</html>

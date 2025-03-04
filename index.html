@@ -5,49 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Data Structures Implementation Tracker</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/daisyui@1.14.0/dist/full.css" rel="stylesheet">
-  <script>
-    function updateProgress() {
-      const implementations = document.querySelectorAll('li span:first-child');
-      const total = implementations.length;
-      const completed = Array.from(implementations)
-        .filter(span => span.textContent.includes('✅')).length;
-      const percentage = ((completed / total) * 100).toFixed(1);
-
-      document.getElementById('completed-count').textContent = completed;
-      document.getElementById('total-count').textContent = total;
-      document.getElementById('completion-percentage').textContent = percentage;
-      document.getElementById('progress-bar').style.width = percentage + '%';
-    }
-
-    function toggleStatus(element) {
-      const statusSpan = element.querySelector('span:first-child');
-      if (statusSpan.classList.contains('text-red-500')) {
-        statusSpan.textContent = '✅';
-        statusSpan.classList.remove('text-red-500');
-        statusSpan.classList.add('text-green-500');
-      } else {
-        statusSpan.textContent = '❌';
-        statusSpan.classList.remove('text-green-500');
-        statusSpan.classList.add('text-red-500');
-      }
-      updateProgress();
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      updateProgress();
-
-      document.querySelectorAll('li.text-gray-700').forEach(li => {
-        li.addEventListener('click', () => toggleStatus(li));
-        li.style.cursor = 'pointer';
-      });
-    });
-  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.3/cdn.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-gray-50">
-  <div class="container mx-auto p-4">
+  <div class="container mx-auto p-4" x-data="tracker">
     <!-- Header -->
     <header class="text-center my-8">
       <h1 class="text-4xl font-bold text-gray-800">Data Structures Implementation Tracker</h1>
@@ -69,12 +33,12 @@
       <div class="inline-block bg-white rounded-lg p-4 border border-gray-200 w-full max-w-lg">
         <h2 class="text-xl font-semibold text-gray-800 mb-2">Implementation Progress</h2>
         <div class="text-gray-600 mb-3">
-          Completed: <span id="completed-count" class="font-bold text-green-500">0</span> /
-          Total: <span id="total-count" class="font-bold">0</span>
-          (<span id="completion-percentage" class="text-blue-500">0</span>%)
+          Completed: <span class="font-bold text-green-500" x-text="completed"></span> /
+          Total: <span class="font-bold" x-text="total"></span>
+          (<span class="text-blue-500" x-text="percentage"></span>%)
         </div>
         <div class="w-full bg-gray-200 rounded-full h-2.5">
-          <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%">
+          <div class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" :style="`width: ${percentage}%`">
           </div>
         </div>
       </div>
@@ -86,21 +50,14 @@
       <div class="bg-white rounded-lg p-6 border border-gray-200">
         <h2 class="text-xl font-semibold text-gray-800 mb-4">Basic Data Structures</h2>
         <ul class="space-y-2">
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-green-500 mr-2">✅</span> List
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-green-500 mr-2">✅</span> Tuple
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">✅</span> Set
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">✅</span> Dictionary
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">✅</span> Array
-          </li>
+          <template x-for="item in categories.basic" :key="item.name">
+            <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors cursor-pointer"
+              @click="toggleStatus(item)">
+              <span :class="item.implemented ? 'text-green-500' : 'text-red-500'" class="mr-2"
+                x-text="item.implemented ? '✅' : '❌'"></span>
+              <span x-text="item.name"></span>
+            </li>
+          </template>
         </ul>
       </div>
 
@@ -108,36 +65,14 @@
       <div class="bg-white rounded-lg p-6 border border-gray-200">
         <h2 class="text-xl font-semibold text-gray-800 mb-4">Advanced Data Structures</h2>
         <ul class="space-y-2">
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Deque
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Counter
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Defaultdict
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> OrderedDict
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Namedtuple
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Heap
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Queue
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> LifoQueue
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> PriorityQueue
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Enum
-          </li>
+          <template x-for="item in categories.advanced" :key="item.name">
+            <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors cursor-pointer"
+              @click="toggleStatus(item)">
+              <span :class="item.implemented ? 'text-green-500' : 'text-red-500'" class="mr-2"
+                x-text="item.implemented ? '✅' : '❌'"></span>
+              <span x-text="item.name"></span>
+            </li>
+          </template>
         </ul>
       </div>
 
@@ -145,39 +80,14 @@
       <div class="bg-white rounded-lg p-6 border border-gray-200">
         <h2 class="text-xl font-semibold text-gray-800 mb-4">External Libraries</h2>
         <ul class="space-y-2">
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> ndarray (NumPy)
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> DataFrame (Pandas)
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Series (Pandas)
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Sparse Matrix (SciPy)
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Graph (NetworkX)
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> BList
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> SortedList
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> SortedDict
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> SortedSet
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Trie
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Bidirectional Dictionary (Bidict)
-          </li>
+          <template x-for="item in categories.external" :key="item.name">
+            <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors cursor-pointer"
+              @click="toggleStatus(item)">
+              <span :class="item.implemented ? 'text-green-500' : 'text-red-500'" class="mr-2"
+                x-text="item.implemented ? '✅' : '❌'"></span>
+              <span x-text="item.name"></span>
+            </li>
+          </template>
         </ul>
       </div>
 
@@ -185,39 +95,14 @@
       <div class="bg-white rounded-lg p-6 border border-gray-200">
         <h2 class="text-xl font-semibold text-gray-800 mb-4">Trees and Graphs</h2>
         <ul class="space-y-2">
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Linked List
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Tree
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Binary Tree
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> AVL Tree
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Red-Black Tree
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Graph (General)
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Stack
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Queue (General)
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Hash Table
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Bloom Filter
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Disjoint Set (Union-Find)
-          </li>
+          <template x-for="item in categories.treesGraphs" :key="item.name">
+            <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors cursor-pointer"
+              @click="toggleStatus(item)">
+              <span :class="item.implemented ? 'text-green-500' : 'text-red-500'" class="mr-2"
+                x-text="item.implemented ? '✅' : '❌'"></span>
+              <span x-text="item.name"></span>
+            </li>
+          </template>
         </ul>
       </div>
 
@@ -225,40 +110,14 @@
       <div class="bg-white rounded-lg p-6 border border-gray-200">
         <h2 class="text-xl font-semibold text-gray-800 mb-4">Specialized Data Structures</h2>
         <ul class="space-y-2">
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> B-Tree
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Skip List
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Circular Buffer
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2<li class=" text-gray-700 flex items-center
-            hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Segment Tree
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Fenwick Tree (Binary Indexed Tree)
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Suffix Array
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Suffix Tree
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Radix Tree
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Quadtree
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Octree
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> R-Tree
-          </li>
+          <template x-for="item in categories.specialized" :key="item.name">
+            <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors cursor-pointer"
+              @click="toggleStatus(item)">
+              <span :class="item.implemented ? 'text-green-500' : 'text-red-500'" class="mr-2"
+                x-text="item.implemented ? '✅' : '❌'"></span>
+              <span x-text="item.name"></span>
+            </li>
+          </template>
         </ul>
       </div>
 
@@ -266,43 +125,111 @@
       <div class="bg-white rounded-lg p-6 border border-gray-200">
         <h2 class="text-xl font-semibold text-gray-800 mb-4">Theoretical and Domain-Specific</h2>
         <ul class="space-y-2">
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Merkle Tree
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Patricia Trie
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Crit-bit Tree
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Huffman Tree
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> VP-Tree
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Cover Tree
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Ball Tree
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> BK-Tree
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Levenshtein Automaton
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Rope
-          </li>
-          <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors">
-            <span class="text-red-500 mr-2">❌</span> Piece Table
-          </li>
+          <template x-for="item in categories.theoretical" :key="item.name">
+            <li class="text-gray-700 flex items-center hover:bg-gray-50 p-2 rounded transition-colors cursor-pointer"
+              @click="toggleStatus(item)">
+              <span :class="item.implemented ? 'text-green-500' : 'text-red-500'" class="mr-2"
+                x-text="item.implemented ? '✅' : '❌'"></span>
+              <span x-text="item.name"></span>
+            </li>
+          </template>
         </ul>
       </div>
     </div>
   </div>
+
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('tracker', () => ({
+        categories: {
+          basic: [
+            { name: 'List', implemented: true },
+            { name: 'Tuple', implemented: true },
+            { name: 'Set', implemented: true },
+            { name: 'Dictionary', implemented: true }
+          ],
+          advanced: [
+            { name: 'Deque', implemented: false },
+            { name: 'Counter', implemented: false },
+            { name: 'Defaultdict', implemented: false },
+            { name: 'OrderedDict', implemented: false },
+            { name: 'Namedtuple', implemented: false },
+            { name: 'Heap', implemented: false },
+            { name: 'Queue', implemented: false },
+            { name: 'LifoQueue', implemented: false },
+            { name: 'PriorityQueue', implemented: false },
+            { name: 'Enum', implemented: false }
+          ],
+          external: [
+            { name: 'ndarray (NumPy)', implemented: false },
+            { name: 'DataFrame (Pandas)', implemented: false },
+            { name: 'Series (Pandas)', implemented: false },
+            { name: 'Sparse Matrix (SciPy)', implemented: false },
+            { name: 'Graph (NetworkX)', implemented: false },
+            { name: 'BList', implemented: false },
+            { name: 'SortedList', implemented: false },
+            { name: 'SortedDict', implemented: false },
+            { name: 'SortedSet', implemented: false },
+            { name: 'Trie', implemented: false },
+            { name: 'Bidirectional Dictionary (Bidict)', implemented: false }
+          ],
+          treesGraphs: [
+            { name: 'Linked List', implemented: false },
+            { name: 'Tree', implemented: false },
+            { name: 'Binary Tree', implemented: false },
+            { name: 'AVL Tree', implemented: false },
+            { name: 'Red-Black Tree', implemented: false },
+            { name: 'Graph (General)', implemented: false },
+            { name: 'Stack', implemented: false },
+            { name: 'Queue (General)', implemented: false },
+            { name: 'Hash Table', implemented: false },
+            { name: 'Bloom Filter', implemented: false },
+            { name: 'Disjoint Set (Union-Find)', implemented: false }
+          ],
+          specialized: [
+            { name: 'B-Tree', implemented: false },
+            { name: 'Skip List', implemented: false },
+            { name: 'Circular Buffer', implemented: false },
+            { name: 'Segment Tree', implemented: false },
+            { name: 'Fenwick Tree (Binary Indexed Tree)', implemented: false },
+            { name: 'Suffix Array', implemented: false },
+            { name: 'Suffix Tree', implemented: false },
+            { name: 'Radix Tree', implemented: false },
+            { name: 'Quadtree', implemented: false },
+            { name: 'Octree', implemented: false },
+            { name: 'R-Tree', implemented: false }
+          ],
+          theoretical: [
+            { name: 'Merkle Tree', implemented: false },
+            { name: 'Patricia Trie', implemented: false },
+            { name: 'Crit-bit Tree', implemented: false },
+            { name: 'Huffman Tree', implemented: false },
+            { name: 'VP-Tree', implemented: false },
+            { name: 'Cover Tree', implemented: false },
+            { name: 'Ball Tree', implemented: false },
+            { name: 'BK-Tree', implemented: false },
+            { name: 'Levenshtein Automaton', implemented: false },
+            { name: 'Rope', implemented: false },
+            { name: 'Piece Table', implemented: false }
+          ]
+        },
+        get total() {
+          return Object.values(this.categories).reduce((count, category) =>
+            count + category.length, 0);
+        },
+        get completed() {
+          return Object.values(this.categories).reduce((count, category) =>
+            count + category.filter(item => item.implemented).length, 0);
+        },
+        get percentage() {
+          return this.total === 0 ? 0 : ((this.completed / this.total) * 100).toFixed(1);
+        },
+        toggleStatus(item) {
+          item.implemented = !item.implemented;
+        }
+      }));
+    });
+  </script>
 </body>
 
 </html>
